@@ -1,0 +1,16 @@
+@import '../../styles/imports.scss';
+
+.container {
+  width: calc(100% - 20px);
+  margin: 0 auto;
+  max-width: 550px;
+  @include m {
+    max-width: 800px;
+  }
+  @include l {
+    max-width: 1000px;
+  }
+  @include xl {
+    max-width: 1200px;
+  }
+}

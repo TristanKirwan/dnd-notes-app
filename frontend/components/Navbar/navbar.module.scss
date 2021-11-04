@@ -1,0 +1,58 @@
+@import '../../styles/imports.scss';
+
+.nav {
+  display: grid;
+  padding: 10px;
+  padding-bottom: 0px;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: space-between;
+  align-items: center;
+  @include m {
+    padding-top: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+.nameContainer {
+  font-weight: 600;
+  font-size: 1.6rem;
+  cursor: pointer;
+  @include m {
+    font-size: 1.8rem;
+  }
+}
+
+.desktopName {
+  @include desktopView;
+}
+
+.mobileName {
+  @include mobileView(flex);
+  letter-spacing: -2px;
+  :nth-child(2) {
+    display: inline-block;
+    margin-top: 6px;
+  }
+  :nth-child(3) {
+    display: inline-block;
+    margin-top: 12px;
+  }
+}
+
+.horizontalLine {
+  display: inline-block;
+  width: 85%;
+  grid-column: 1 / -1;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--color-white-3);
+  margin-top: 10px;
+  @include m {
+    width: calc(100% - 40px);
+    margin-top: 15px;
+  }
+}
+
+.icon {
+  margin-right: 10px;
+}

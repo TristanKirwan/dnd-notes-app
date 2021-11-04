@@ -1,0 +1,74 @@
+@import '../../styles/imports.scss';
+
+.registerSection {
+  margin-top: 50px;
+}
+
+.registerCard {
+  display: grid;
+  grid-gap: 25px;
+  padding: 15px;
+  border-radius: 5px;
+  @include m {
+    justify-items: center;
+  }
+}
+
+.logo {
+  width: 100px;
+  justify-self: center;
+  path {
+    fill: var(--color-white);
+  }
+}
+
+.headerText {
+  font-size: 3.2rem;
+  text-align: center;
+  @include fontWeight(700);
+  @include m {
+    font-size: 4.5rem;
+  }
+}
+
+.registrationForm {
+  display: grid;
+  grid-gap: 15px;
+  border: 1px solid var(--border-color-faded-white);
+  padding: 15px;
+  @include m {
+    padding: 25px 60px;
+    grid-gap: 25px;
+    margin-top: 25px;
+  }
+}
+
+.inputGroup {
+  display: grid;
+  grid-gap: 5px;
+  label {
+    opacity: 0.3;
+    @include fontWeight(200);
+  }
+}
+
+.ctaContainer {
+  display: grid;
+  grid-gap: 15px;
+  grid-auto-flow: column;
+  align-items: center;
+  grid-template-columns: repeat(2, max-content);
+}
+
+.loginLink {
+  opacity: 0.25;
+  transition: opacity 0.2s;
+  @include fontWeight(200);
+  &:hover {
+    opacity: 0.5;
+  }
+  a {
+    font-size: 1.2rem;
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,64 @@
+@import '../../styles/imports.scss';
+
+.sectionContainer {
+  padding-top: 50px;
+  min-height: calc(100vh - 49px);
+  box-sizing: border-box;
+  @include m {
+    padding-top: 100px;
+    min-height: calc(100vh - 47px);
+  }
+}
+
+.contentContainer {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-gap: 35px;
+}
+
+.heroTextContainer {
+  display: grid;
+  grid-gap: 10px;
+  text-align: center;
+  @include fontWeight(200);
+  @include l {
+    max-width: 900px;
+  }
+}
+
+.heroText,
+.emphasizedHeroText {
+  font-size: 4.6rem;
+  @include m {
+    font-size: 6.4rem;
+  }
+}
+
+.emphasizedHeroText {
+  @include fontWeight(800);
+}
+
+.introduction {
+  text-align: center;
+  line-height: 2rem;
+  @include fontWeight(200);
+}
+
+.emphasizedIntroText {
+  @include fontWeight(500);
+  border-bottom: 2px solid var(--color-white);
+}
+
+.ctaContainer {
+  display: grid;
+  grid-gap: 15px;
+  justify-items: center;
+}
+
+.loginLink {
+  a {
+    font-size: 1.2rem;
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,16 @@
+.word {
+  display: inline-block;
+  position: relative;
+  &:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    bottom: 1px;
+    left: -1px;
+    width: calc(100% + 2px);
+    height: 3px;
+    background-color: var(--color-yellow-2);
+    transform: rotate(3deg) skewX(10deg);
+    z-index: -1;
+  }
+}

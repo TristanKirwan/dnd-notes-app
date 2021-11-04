@@ -1,0 +1,51 @@
+@import '../../styles/imports.scss';
+
+.button {
+  position: relative;
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: 2px solid var(--color-yellow);
+  background: none;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 1.6rem;
+  @include m {
+    font-size: 1.8rem;
+  }
+  overflow: hidden;
+  &:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    height: 150%;
+    width: 10px;
+    transform: rotate(-25deg) translateY(-50%);
+    background-color: var(--color-white);
+    opacity: 0.2;
+    transition: 0.2s left, 0.2s opacity;
+  }
+  &:hover {
+    .arrow {
+      transform: translateX(3px);
+    }
+    &:after {
+      left: calc(100% + 15px);
+      opacity: 0.4;
+    }
+  }
+}
+
+.linkButton {
+  a {
+    text-decoration: none;
+    color: var(--color-white);
+  }
+}
+
+.arrow {
+  margin-left: 10px;
+  transform: translateX(0px);
+  transition: 0.2s transform;
+}
