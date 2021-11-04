@@ -30,9 +30,9 @@ export default function LoginSection(){
         console.log('result:', result)
       })
       .catch(err => {
-        if(err.response.data && err.response.data.notFound){
+        if(err.response.data && (err.response.data.notFound || err.response.data.passwordIncorrect)){
           setLoginError('The combination of username/password is incorrect. Please try again.')
-          console.log('User not found.')
+          passwordInput.current.value = '';
         }
       })
     }
