@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 import axios from 'axios'; 
 import clsx from 'clsx';
 
@@ -6,6 +7,9 @@ import Container from '../../components/Container/container';
 import Input from '../../components/Input/input';
 import Button from '../../components/Button/button';
 import Link from '../../components/Link/link';
+
+import setAccessToken from '../../utils/setAccessToken'
+import { useStore } from '../../store/provider'
 
 import style from './loginSection.module.scss';
 
@@ -15,6 +19,9 @@ export default function LoginSection(){
 
   const usernameInput = useRef(null)
   const passwordInput = useRef(null)
+
+  const router = useRouter();
+  const { dispatch } = useStore();
 
   async function submitLoginForm(e){
     e.preventDefault();
@@ -27,10 +34,19 @@ export default function LoginSection(){
         password: password
       })
       .then(result => {
-        console.log('result:', result)
+        console.log('push after?')
+
+        const token = result.data.accessToken
+        setAccessToken(token)
+        dispatch({type: 'LOGIN', payload: {
+          username: username
+        }})
+        console.log('push after?')
+        router.push('/')
       })
       .catch(err => {
-        if(err.response.data && (err.response.data.notFound || err.response.data.passwordIncorrect)){
+        console.error(err)
+        if(err.response && err.response.data && (err.response.data.notFound || err.response.data.passwordIncorrect)){
           setLoginError('The combination of username/password is incorrect. Please try again.')
           passwordInput.current.value = '';
         }

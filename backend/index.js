@@ -66,7 +66,6 @@ app.post('/login', async (req, res) => {
       res.status(500).send({passwordIncorrect: true})
     }
   }
-
 })
 
 app.listen(port, '0.0.0.0', () => {
