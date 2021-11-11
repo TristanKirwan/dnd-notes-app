@@ -2,7 +2,7 @@ import express from'express';
 import bodyParser from 'body-parser';
 
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, setDoc  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection  } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -17,9 +17,21 @@ global.db = getFirestore(firebaseApp);
 global.app = express();
 const port = 8000;
 
+function authenticateToken(req,res,next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  console.log('?', token)
+  if(!token) return res.sendStatus(401)
+  jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if(err) return res.sendStatus(403)
+    req.user = user
+    next()
+  })
+}
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
   next();
 });
 
@@ -66,6 +78,16 @@ app.post('/login', async (req, res) => {
       res.status(500).send({passwordIncorrect: true})
     }
   }
+})
+
+app.post('/addNote', authenticateToken, async(req,res) => {
+  const { text } = req.body
+  const user = req.user
+  console.log(user)
+  const docRef = await addDoc(collection(db, 'notes'), {
+    text: text
+  })
+
 })
 
 app.listen(port, '0.0.0.0', () => {

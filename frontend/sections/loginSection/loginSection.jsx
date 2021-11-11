@@ -34,14 +34,11 @@ export default function LoginSection(){
         password: password
       })
       .then(result => {
-        console.log('push after?')
-
         const token = result.data.accessToken
         setAccessToken(token)
         dispatch({type: 'LOGIN', payload: {
           username: username
         }})
-        console.log('push after?')
         router.push('/')
       })
       .catch(err => {
