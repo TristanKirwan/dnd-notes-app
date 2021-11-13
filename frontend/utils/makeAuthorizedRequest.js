@@ -1,10 +1,15 @@
 import axios from 'axios'
 import getAccessToken from './getAccessToken'
 
-export default function makeAuthorizedRequest(path, body, passedToken = null){
+export default function makeAuthorizedRequest(path, body, passedToken = null, method = 'POST'){
   const token = passedToken || getAccessToken();
   if(token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
-  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/${path}`, body)
+  switch(method){
+    case 'POST': 
+      return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/${path}`, body);
+    case 'GET': 
+      return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/${path}`);
+  }
 }

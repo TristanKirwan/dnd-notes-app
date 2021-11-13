@@ -2,7 +2,7 @@ import express from'express';
 import bodyParser from 'body-parser';
 
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, setDoc, addDoc, collection  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, collection, runTransaction, arrayUnion  } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -51,7 +51,7 @@ app.post('/register', async (req, res) => {
   if (!accountDocSnap.exists()) {
     console.log('No account with entered name, continue registration');
     const hash = await bcrypt.hash(password, 10);
-    setDoc(accountDocRef, {password: hash })
+    setDoc(accountDocRef, {password: hash, campaigns: [] })
     res.status(200).send('User added successfully');
   } else {
     console.log(`Username: ${username} already exists in the database`);
@@ -79,6 +79,7 @@ app.post('/login', async (req, res) => {
   }
 })
 
+//THIS IS NOT FINISHED!
 app.post('/addNote', authenticateToken, async(req,res) => {
   const { text } = req.body
   const user = req.user
@@ -86,6 +87,45 @@ app.post('/addNote', authenticateToken, async(req,res) => {
   const docRef = await addDoc(collection(db, 'notes'), {
     text: text
   })
+})
+
+app.get('/getCampaigns', authenticateToken, async(req, res) => {
+  const { username } = req.user
+})
+
+app.post('/addCampaign', authenticateToken, async(req,res) => {
+  const { username } = req.user
+  const { title } = req.body
+
+  try {
+    await runTransaction(db, async (transaction) => {
+      const userRef = doc(db, 'users', `${username}`);
+      const userDoc = await transaction.get(userRef)
+
+      if(!userDoc.exists()) {
+        // If the user trying to make the campaign doesn't exist, we don't want to make the campaign.
+        throw `User ${username} does not exist in database!`
+      }
+      const campaignDocRef = doc(collection(db, 'campaigns'))
+      await transaction.set(campaignDocRef, {
+        title: title,
+        users: [userRef]
+      })
+
+      await transaction.update(userRef, {
+        campaigns: arrayUnion(campaignDocRef)
+      })
+
+      res.status(200).send({
+        title: title,
+        id:campaignDocRef.id
+      })
+    })
+  } catch (error) {
+    console.error('Transaction failed with error:', error)
+    res.status(500).send({message: error})
+  }
+
 })
 
 app.listen(port, '0.0.0.0', () => {
