@@ -20,7 +20,6 @@ const port = 8000;
 function authenticateToken(req,res,next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  console.log('?', token)
   if(!token) return res.sendStatus(401)
   jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if(err) return res.sendStatus(403)
@@ -87,7 +86,6 @@ app.post('/addNote', authenticateToken, async(req,res) => {
   const docRef = await addDoc(collection(db, 'notes'), {
     text: text
   })
-
 })
 
 app.listen(port, '0.0.0.0', () => {
