@@ -1,50 +1,8 @@
 import { useState } from 'react';
-import cookies from 'next-cookies';
-import jsonwebtoken from 'jsonwebtoken';
 
 import AccountItemsSection from '../../sections/accountItemsSection/accountItemsSection';
 
 import makeAuthorizedRequest from "../../utils/makeAuthorizedRequest";
-
-export async function getServerSideProps(context) {
-  const { accessToken } = cookies(context)
-  const { res } = context
-  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
-  let shouldRedirect = false;
-  if(!accessToken) {
-    shouldRedirect = true
-  } else {
-    jsonwebtoken.verify(accessToken, accessTokenSecret, (err, user) => {
-      if(err) {
-        shouldRedirect = true
-      }
-    })
-  }
-
-  if(shouldRedirect){
-    res.writeHead(307, {
-      Location: '/login',
-      'Set-Cookie': 'accessToken=deleted; Expires=Thu, 31 Oct 2000 07:28:00 GMT;'
-    })
-    res.end();
-  }
-
-  // Get connected campaigns of this account
-  const campaignsRes = await makeAuthorizedRequest('getCampaigns', null, accessToken, 'GET')
-  .then(res => {
-    return res.data.campaigns
-  })
-  .catch(err => {
-    console.error(err)
-  })
-
-  const propsToPass = {
-    campaigns: campaignsRes
-  }
-
-  return {props: propsToPass}
-}
-
 
 export default function Account(props) {
   const [addCampaignMessage, setAddCampaignMessage] = useState(null)

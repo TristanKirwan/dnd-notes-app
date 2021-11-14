@@ -1,0 +1,28 @@
+@import '../../../styles/imports.scss';
+
+.extraContentContainer {
+  display: flex;
+}
+
+.iconContainer {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  margin-right: 15px;
+}
+
+.usersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: -5px;
+}
+
+.username {
+  margin-right: 15px;
+  margin-bottom: 5px;
+  font-style: italic;
+  @include fontWeight(150);
+  &:last-of-type {
+    margin-right: 0px;
+  }
+}

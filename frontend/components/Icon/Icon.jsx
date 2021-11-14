@@ -1,11 +1,13 @@
 import Dndlogo from './icons/dndLogo';
 import CampaignIcon from './icons/campaign';
 import Scroll from './icons/scroll'
+import Users from './icons/users'
 
 const icons = {
   dndlogo: Dndlogo,
   campaign: CampaignIcon,
-  scroll: Scroll
+  scroll: Scroll,
+  users: Users
 };
 
 function Icon({ type = null, ...rest }) {

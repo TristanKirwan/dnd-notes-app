@@ -1,4 +1,4 @@
-@import '../../../styles/imports.scss';
+@import '../../styles/imports.scss';
 
 .accountPageCard {
   display: grid;
@@ -45,7 +45,12 @@
 }
 
 .cardBody {
+  display: grid;
+  grid-gap: 10px;
   margin-bottom: 10px;
+  @include m {
+    grid-gap: 15px;
+  }
 }
 
 .description {
