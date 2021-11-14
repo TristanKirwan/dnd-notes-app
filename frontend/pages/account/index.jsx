@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import cookies from 'next-cookies';
 import jsonwebtoken from 'jsonwebtoken';
+
+import AccountLandingSection from '../../sections/accountLandingSection/accountLandingSection';
 
 import makeAuthorizedRequest from "../../utils/makeAuthorizedRequest";
 
@@ -27,16 +29,31 @@ export async function getServerSideProps(context) {
     res.end();
   }
 
-  // Get connected campaigns of this account :)
+  // Get connected campaigns of this account
+  const campaignsRes = await makeAuthorizedRequest('getCampaigns', null, accessToken, 'GET')
+  .then(res => {
+    console.log('res aaaaa', res.data)
+    return res.data.campaigns
+  })
+  .catch(err => {
+    console.error(err)
+  })
 
-  return {props: {}}
+  const propsToPass = {
+    campaigns: campaignsRes
+  }
+
+  return {props: propsToPass}
 }
 
 
-export default function Account() {
+export default function Account(props) {
   const [addCampaignMessage, setAddCampaignMessage] = useState(null)
 
-  
+  useEffect(() => {
+    console.log(props)
+  })
+
   function testFunction(e){
     e.preventDefault();
     let actualFormData = new FormData(e.target);
@@ -77,22 +94,8 @@ export default function Account() {
   }
 
   return (
-    <div>
-    <h1>Add note</h1>
-    <form onSubmit={testFunction}>
-      <input type="text" name="text">
-
-      </input>
-     <button type="submit">Add</button>
-    </form>
-    <h1>Add Campaign</h1>
-    <form onSubmit={addCampaign}>
-      <input type="text" name="title" value="Boys in the mines">
-
-      </input>
-     <button type="submit">Add</button>
-    </form>
-    {addCampaignMessage && <span>{addCampaignMessage}</span>}
-    </div>
+    <>
+      <AccountLandingSection />
+    </>
   )
 }

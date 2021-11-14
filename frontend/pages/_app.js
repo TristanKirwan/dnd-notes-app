@@ -1,7 +1,9 @@
 import '../styles/reset.css';
 import '../styles/globals.scss';
+
 import Head from 'next/head';
 import { StoreProvider } from '../store/provider'
+
 import Navigation from '../components/Navbar/navbar'
 
 function MyApp({ Component, pageProps }) {

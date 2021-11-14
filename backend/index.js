@@ -2,7 +2,7 @@ import express from'express';
 import bodyParser from 'body-parser';
 
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, collection, runTransaction, arrayUnion  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, query, where  } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -91,6 +91,31 @@ app.post('/addNote', authenticateToken, async(req,res) => {
 
 app.get('/getCampaigns', authenticateToken, async(req, res) => {
   const { username } = req.user
+  const userDoc = doc(db, 'users', `${username}`);
+  const userDocSnap = await getDoc(userDoc)
+  if(!userDocSnap.exists()) {
+    res.status(500).send({message: `User ${username} does not exist in the database!`})
+  }
+  const campaignQuery = query(collection(db, "campaigns"), where("users", "array-contains", userDoc))
+
+  const querySnapshot = await getDocs(campaignQuery);
+
+  const connectedCampaigns = []
+  querySnapshot.forEach(doc => {
+    const campaignData = doc.data();
+    const campaignUsers = campaignData.users.map(user => user.id)
+    connectedCampaigns.push(
+      {
+        title: campaignData.title,
+        users: campaignUsers,
+        id: doc.id
+      }
+    )
+  })
+  
+  res.status(200).send({
+    campaigns: connectedCampaigns
+  })
 })
 
 app.post('/addCampaign', authenticateToken, async(req,res) => {
