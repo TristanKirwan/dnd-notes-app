@@ -1,0 +1,59 @@
+@import '../../../styles/imports.scss';
+
+.accountPageCard {
+  display: grid;
+  grid-gap: 10px;
+  padding: 15px;
+  border-radius: var(--border-rounding-small);
+  cursor: pointer;
+  height: 100%;
+  grid-template-rows: max-content 1fr max-content;
+  @include softBorder;
+  @include m {
+    grid-gap: 15px;
+    padding: 15px 25px;
+  }
+  &:hover {
+    .arrow {
+      transform: translateX(3px);
+    }
+  }
+}
+
+.cardHeader {
+  display: grid;
+  grid-gap: 15px;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  border-bottom: 1px solid var(--color-soft-border-light);
+  padding-bottom: 10px;
+}
+
+.title {
+  font-size: 2.2rem;
+  @include fontWeight(750);
+  @include m {
+    font-size: 3rem;
+  }
+}
+
+.icon {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  margin-right: 15px;
+}
+
+.cardBody {
+  margin-bottom: 10px;
+}
+
+.description {
+  @include fontWeight(200);
+}
+
+.arrow {
+  margin-left: 10px;
+  transform: translateX(0px);
+  transition: 0.2s transform;
+}

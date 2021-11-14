@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import cookies from 'next-cookies';
 import jsonwebtoken from 'jsonwebtoken';
 
-import AccountLandingSection from '../../sections/accountLandingSection/accountLandingSection';
+import AccountItemsSection from '../../sections/accountItemsSection/accountItemsSection';
 
 import makeAuthorizedRequest from "../../utils/makeAuthorizedRequest";
 
@@ -32,7 +32,6 @@ export async function getServerSideProps(context) {
   // Get connected campaigns of this account
   const campaignsRes = await makeAuthorizedRequest('getCampaigns', null, accessToken, 'GET')
   .then(res => {
-    console.log('res aaaaa', res.data)
     return res.data.campaigns
   })
   .catch(err => {
@@ -49,10 +48,6 @@ export async function getServerSideProps(context) {
 
 export default function Account(props) {
   const [addCampaignMessage, setAddCampaignMessage] = useState(null)
-
-  useEffect(() => {
-    console.log(props)
-  })
 
   function testFunction(e){
     e.preventDefault();
@@ -95,7 +90,7 @@ export default function Account(props) {
 
   return (
     <>
-      <AccountLandingSection />
+      <AccountItemsSection hasAccountPageTitle/>
     </>
   )
 }

@@ -86,7 +86,7 @@ export default function RegisterSection(){
     <section className={style.registerSection}>
       <Container>
         <div className={style.registerCard}>
-          <p className={style.headerText}>Start your adventure</p>
+          <h2 className={style.headerText}>Start your adventure</h2>
             <form className={style.registrationForm} onSubmit={submitRegisterForm}>
               <div className={style.inputGroup}>
                 <Input type="text" required passedRef={usernameInput} hasLabel labelText={"Username"} id="register-Username" error={usernameError}></Input>

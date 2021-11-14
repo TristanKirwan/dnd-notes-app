@@ -1,0 +1,23 @@
+@import '../../styles/imports.scss';
+
+.accountLandingSection {
+  margin-top: 15px;
+}
+
+.container {
+  display: grid;
+  grid-gap: 25px;
+}
+
+.title {
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+
+.cardContainer {
+  display: grid;
+  grid-gap: 25px;
+  @include m {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

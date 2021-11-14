@@ -25,7 +25,6 @@
 .headerText {
   font-size: 3.2rem;
   text-align: center;
-  @include fontWeight(700);
   @include m {
     font-size: 4.5rem;
   }

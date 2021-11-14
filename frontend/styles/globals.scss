@@ -21,6 +21,8 @@
   --border-color-faded-white: #ffffff0d;
 
   --color-error: #f96666;
+  --color-soft-border: #828282;
+  --color-soft-border-light: #39393c;
 }
 
 html {
@@ -59,6 +61,22 @@ h1 {
   font-size: 4.6rem;
   @media (min-width: 1025px) {
     font-size: 6.4rem;
+  }
+}
+
+h2 {
+  font-size: 3.2rem;
+  font-variation-settings: 'wght' 800;
+  @media (min-width: 1025px) {
+    font-size: 4.5rem;
+  }
+}
+
+h3 {
+  font-size: 2.8rem;
+  font-variation-settings: 'wght' 500;
+  @media (min-width: 1025px) {
+    font-size: 4rem;
   }
 }
 

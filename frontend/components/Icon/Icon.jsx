@@ -1,13 +1,17 @@
-import dndlogo from './icons/dndLogo';
+import Dndlogo from './icons/dndLogo';
+import CampaignIcon from './icons/campaign';
+import Scroll from './icons/scroll'
 
 const icons = {
-  dndlogo: dndlogo
+  dndlogo: Dndlogo,
+  campaign: CampaignIcon,
+  scroll: Scroll
 };
 
-function Icon({ type = null }) {
+function Icon({ type = null, ...rest }) {
   const IconComp = icons[type];
-  if (!type || type === '') return null;
-  return <IconComp />;
+  if (!type || type === '' || IconComp === undefined) return null;
+  return <IconComp {...rest} />;
 }
 
 export default Icon;

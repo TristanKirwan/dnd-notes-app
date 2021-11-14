@@ -60,7 +60,7 @@ export default function LoginSection(){
     <section className={style.loginSection}>
       <Container>
         <div className={style.loginCard}>
-          <p className={style.headerText}>Log in</p>
+          <h2 className={style.headerText}>Log in</h2>
             <form className={clsx([style.loginForm, loginError && style.hasError])} onSubmit={submitLoginForm}>
               <div className={style.inputGroup}>
                 <Input type="text" inputCallBack={onInputFocus} required passedRef={usernameInput} passedClass={style.loginInput}  hasLabel labelText={"Username"} id="register-Username"></Input>
