@@ -56,3 +56,38 @@
 .icon {
   margin-right: 10px;
 }
+
+.accountWrapper {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    .accountDropdown {
+      max-height: 100px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+}
+
+.accountDropdown {
+  display: grid;
+  grid-gap: 15px;
+  min-width: 100px;
+  width: 100%;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  max-height: 0px;
+  transition: max-height 0.15s ease-in, padding 0.15s ease-in;
+  overflow: hidden;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: var(--color-black-2);
+  border-radius: 0px 0px 5px 5px;
+}

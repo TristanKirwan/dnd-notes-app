@@ -4,7 +4,6 @@ import CampaignCard from '../../components/Cards/CampaignCard/campaignCard'
 import style from './campaignOverviewSection.module.scss';
 
 export default function CampaignOverviewSection({campaigns}){
-  console.log(campaigns)
   return (
     <section className={style.campaignOverviewSection}>
       <Container containerClass={style.container}>

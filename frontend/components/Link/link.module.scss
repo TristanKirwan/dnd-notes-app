@@ -1,8 +1,8 @@
 .link {
-  a {
+  a,
+  button {
     text-decoration: none;
     color: var(--color-white);
-    font-weight: 600;
     transition: color 0.2s;
     font-size: 1.6rem;
     &:hover {
@@ -12,7 +12,8 @@
     }
   }
   &.noUnderline {
-    a {
+    a,
+    button {
       &:hover {
         text-decoration: none;
       }

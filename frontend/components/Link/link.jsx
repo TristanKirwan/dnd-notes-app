@@ -3,11 +3,20 @@ import clsx from 'clsx';
 
 import style from './link.module.scss';
 
-export default function LinkComponent(props){
+export default function LinkComponent({linkClass = '', noUnderline = false, href='/', children, onClick = null}){
+  if(onClick !== null) {
+    return (
+      <span className={clsx([style.link, noUnderline && style.noUnderline, linkClass])}>
+        <button className={clsx([style.link])} onClick={onClick}>
+        {children}
+      </button>
+    </span>
+    )
+  }
   return (
-    <span className={clsx([style.link, props.class, props.noUnderline && style.noUnderline, props.linkClass])}>
-      <Link href={props.href} className={clsx([style.link])}>
-        {props.children}
+    <span className={clsx([style.link, noUnderline && style.noUnderline, linkClass])}>
+      <Link href={href} className={clsx([style.link])}>
+        {children}
       </Link>
     </span>
   )

@@ -11,6 +11,8 @@ function reducer(state = defaultState, action = {}) {
   switch(action.type) {
     case "LOGIN":
       return {...state, accountDetails: action.payload}
+    case "LOGOUT": 
+      return {...state, accountDetails: null}
     default: 
       return state
   }
