@@ -4,7 +4,7 @@ import axios from 'axios';
 import clsx from 'clsx';
 
 import Container from '../../components/Container/container';
-import Input from '../../components/Input/input';
+import Input from '../../components/Forms/FormElements/Input/input';
 import Button from '../../components/Button/button';
 import Link from '../../components/Link/link';
 

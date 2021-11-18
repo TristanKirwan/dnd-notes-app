@@ -3,8 +3,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios'
 
 import Container from '../../components/Container/container';
-// import Icon from '../../components/Icon/Icon';
-import Input from '../../components/Input/input';
+import Input from '../../components/Forms/FormElements/Input/input'
 import Button from '../../components/Button/button';
 import Link from '../../components/Link/link';
 
