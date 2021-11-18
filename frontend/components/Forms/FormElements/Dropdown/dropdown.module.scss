@@ -1,0 +1,29 @@
+@import '../../../../styles/imports.scss';
+
+.label {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.select {
+  display: block;
+  width: 100%;
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: 1.6rem;
+  border: 0px;
+  border-bottom: 1px solid var(--color-white-3);
+  cursor: pointer;
+  @include m {
+    font-size: 1.8rem;
+  }
+}
+
+.option {
+  // color: var(--color-black);
+  background: none;
+  border: none;
+  &:hover {
+    cursor: pointer;
+  }
+}

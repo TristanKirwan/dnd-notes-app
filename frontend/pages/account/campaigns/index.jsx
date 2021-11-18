@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
 import cookies from 'next-cookies';
 
+import PageTitle from '../../../components/PageTitle/pageTitle'
 import CampaignOverviewSection from '../../../sections/campaignOverviewSection/campaignOverviewSection';
 
 import checkTokenOnProtectedRoute from "../../../utils/checkTokenOnProtectedRoute"
@@ -33,14 +33,10 @@ export async function getServerSideProps(context) {
 
 
 export default function AccountCampaignsPage(props) {
-  useEffect(() => {
-    console.log(props)
-  }, [])
-
 
   return (
     <>
-      <h2>My campaigns</h2>
+      <PageTitle>My campaigns</PageTitle>
       <CampaignOverviewSection campaigns={props.campaigns} />
     </>
   )

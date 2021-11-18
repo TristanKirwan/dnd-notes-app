@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import clsx from 'clsx';
+import { useState, useEffect } from 'react';
+import clsx from 'clsx'
 
-import style from './input.module.scss';
+import style from '../Input/input.module.scss';
 
-export default function Input({
-  type,
+export default function TextArea({
   name = null,
   id = null,
   required = false,
@@ -14,7 +13,8 @@ export default function Input({
   labelText = '',
   error = null,
   passedClass = '',
-  inputCallBack = null
+  inputCallBack = null,
+  rows = 10
 }){
   const [shouldShowError, setShouldShowError] = useState(false)
 
@@ -32,14 +32,16 @@ export default function Input({
   return (
     <>
       {hasLabel && labelText && id && <label htmlFor={id}>{labelText}</label> }
-      <input type={type} 
+      <textarea
         name={name}
         id={id}
         required={required}
         placeholder={placeholderText}
         ref={passedRef}
-        className={clsx([style.input, shouldShowError && style.hasError, passedClass])}
-        onFocus={onInputTouch}></input>
+        className={clsx([style.input, shouldShowError && style.hasError, passedClass, style.textArea])}
+        onFocus={onInputTouch}
+        rows={rows}
+        ></textarea>
       {shouldShowError && <span className={style.errorText}>
         {error.text}
         {Array.isArray(error.listItems) && error.listItems.length > 0 && <ul>

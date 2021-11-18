@@ -4,14 +4,13 @@ import { useStore } from '../../store/provider'
 
 import style from './accountItemsSection.module.scss';
 
-export default function AccountItemsSection({hasAccountPageTitle}) {
+export default function AccountItemsSection() {
   const { state, dispatch } = useStore();
   const { accountDetails } = state
 
   return (
     <section className={style.accountItemsSection}>
       <Container containerClass={style.container}>
-        {hasAccountPageTitle && <h2 className={style.title}>My Account</h2>}
         <h3 className={style.sectionTitle}>My items</h3>
         <div className={style.cardContainer}>
           <GenericCard title={"Campaigns"} description={"See the adventures you are currently embarking on"} icon={"campaign"} link={"/account/campaigns"} />

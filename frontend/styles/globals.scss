@@ -48,6 +48,14 @@ body {
   color: var(--color-white);
 }
 
+input,
+button,
+textarea,
+select,
+option {
+  font-family: 'Inter var', sans-serif;
+}
+
 button {
   background: none;
   border: none;

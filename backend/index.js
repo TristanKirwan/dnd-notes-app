@@ -150,7 +150,17 @@ app.post('/addCampaign', authenticateToken, async(req,res) => {
     console.error('Transaction failed with error:', error)
     res.status(500).send({message: error})
   }
+})
 
+app.get('/users/:id', async(req, res) => {
+  const { id } = req.params
+  const userDoc = doc(db, 'users', `${id}`);
+  const userDocSnap = await getDoc(userDoc)
+  if(!userDocSnap.exists()) {
+    return res.status(500).send({message: `User ${id} does not exist in the database!`})
+  } else {
+    return res.status(200).send({success: true})
+  }
 })
 
 app.listen(port, '0.0.0.0', () => {

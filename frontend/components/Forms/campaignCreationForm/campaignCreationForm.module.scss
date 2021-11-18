@@ -1,0 +1,51 @@
+@import '../../../styles/imports.scss';
+
+.campaignCreationForm {
+  display: grid;
+  grid-gap: 25px 50px;
+  grid-template-columns: 1fr;
+  @include m {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 50px;
+  }
+  margin-bottom: 50px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.usersContainerHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.icon {
+  display: inline-block;
+  width: 25px;
+  fill: var(--color-white);
+  margin-right: 10px;
+}
+
+.usersWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+}
+
+.singleUserCotainer {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+
+.deleteIcon {
+  margin-left: 5px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}

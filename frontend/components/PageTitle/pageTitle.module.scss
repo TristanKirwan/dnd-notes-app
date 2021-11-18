@@ -1,0 +1,7 @@
+@import '../../styles/imports.scss';
+
+.title {
+  margin-top: 40px;
+  margin-bottom: 15px;
+  @include fontWeight(600);
+}
