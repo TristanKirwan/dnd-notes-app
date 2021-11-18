@@ -5,7 +5,7 @@ import Icon from '../Icon/icon';
 
 import style from './genericCard.module.scss';
 
-export default function AccountPageCard({title, description = '', icon, footerText = 'View all', link = '', extraContent = null}) {
+export default function GenericCard({title, description = '', icon, footerText = 'View all', link = '', extraContent = null}) {
   return (
     <Link href={link}>
       <div className={style.accountPageCard}>

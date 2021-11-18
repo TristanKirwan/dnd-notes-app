@@ -1,14 +1,18 @@
 @import '../../../styles/imports.scss';
 
 .extraContentContainer {
-  display: flex;
+  display: grid;
+  grid-gap: 15px;
 }
 
 .iconContainer {
   display: inline-block;
   width: 25px;
-  height: 25px;
   margin-right: 15px;
+}
+
+.usersSection {
+  display: flex;
 }
 
 .usersContainer {
@@ -25,4 +29,9 @@
   &:last-of-type {
     margin-right: 0px;
   }
+}
+
+.dmSection {
+  display: flex;
+  align-items: center;
 }

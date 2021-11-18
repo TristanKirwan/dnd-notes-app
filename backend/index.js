@@ -107,6 +107,9 @@ app.get('/getCampaigns', authenticateToken, async(req, res) => {
     connectedCampaigns.push(
       {
         title: campaignData.title,
+        description: campaignData.description,
+        type: campaignData.type,
+        dm: campaignData.dm.id,
         users: campaignUsers,
         id: doc.id
       }
@@ -120,29 +123,51 @@ app.get('/getCampaigns', authenticateToken, async(req, res) => {
 
 app.post('/addCampaign', authenticateToken, async(req,res) => {
   const { username } = req.user
-  const { title } = req.body
-
+  const { title, dm, description, type, users } = req.body
   try {
     await runTransaction(db, async (transaction) => {
-      const userRef = doc(db, 'users', `${username}`);
-      const userDoc = await transaction.get(userRef)
-
-      if(!userDoc.exists()) {
-        // If the user trying to make the campaign doesn't exist, we don't want to make the campaign.
-        throw `User ${username} does not exist in database!`
-      }
+      const usersArray = []
       const campaignDocRef = doc(collection(db, 'campaigns'))
+
+      for(let i = 0; i < users.length; i ++ ){
+        const currentUser = users[i]
+        const userRef = doc(db, 'users', `${currentUser}`);
+        const userDoc = await transaction.get(userRef)
+
+        //All users filled in should exist.
+        if(!userDoc.exists()) {
+          throw `User ${currentUser} does not exist in database!`
+        }
+
+        usersArray.push(userRef)
+      }
+      
+
+      // Because the users are added in the same order, we can use the index to find the document of the DM, instead of querying again.
+      const dmIndex = users.indexOf(dm)
+      const dmDoc = usersArray[dmIndex]
+
+      for(let i = 0; i < usersArray.length; i ++ ) {
+        const currentUserDoc = usersArray[i]
+        await transaction.update(currentUserDoc, {
+          campaigns: arrayUnion(campaignDocRef)
+        })
+      }
+
       await transaction.set(campaignDocRef, {
         title: title,
-        users: [userRef]
-      })
-
-      await transaction.update(userRef, {
-        campaigns: arrayUnion(campaignDocRef)
+        description: description,
+        type: type,
+        dm: dmDoc,
+        users: usersArray
       })
 
       res.status(200).send({
         title: title,
+        description: description,
+        type: type,
+        dm: dm,
+        users: users,
         id:campaignDocRef.id
       })
     })

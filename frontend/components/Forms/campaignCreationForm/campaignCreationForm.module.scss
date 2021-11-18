@@ -49,3 +49,10 @@
   display: flex;
   justify-content: center;
 }
+
+.errorText {
+  display: inline-block;
+  grid-column: 1 / -1;
+  color: var(--color-error);
+  font-size: 1.2rem;
+}

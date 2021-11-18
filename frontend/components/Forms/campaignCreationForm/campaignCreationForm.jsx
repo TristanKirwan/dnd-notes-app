@@ -11,15 +11,17 @@ import Button from '../../Button/button';
 
 import { useStore } from '../../../store/provider';
 import campaignTypes from '../../../databaseTypes/campaignTypes'
+import makeAuthorizedRequest from '../../../utils/makeAuthorizedRequest'
 
 import style from './campaignCreationForm.module.scss';
 
-export default function CampaignCreationForm(){
+export default function CampaignCreationForm({successCallBack}){
   const { state } = useStore();
   const { accountDetails } = state
 
   const [usersToInvite, setUsersToInvite] = useState([])
   const [userToInviteError, setUserToInviteError] = useState(null)
+  const [formError, setFormError] = useState(null)
 
   useEffect(() => {
     if(accountDetails && accountDetails.username) {
@@ -84,6 +86,13 @@ export default function CampaignCreationForm(){
     
     //The players don't actually come from the form, we have them saved in the state. By not giving the input a name we don't get it in the formdata.
     finalFormData['users'] = usersToInvite
+    makeAuthorizedRequest('addCampaign', finalFormData)
+    .then(res => {
+      successCallBack(res.data)
+    })
+    .catch(err => {
+      console.error('Something went wrong trying to add the campaign. Please try again later')
+    })
   }
 
   return (
@@ -119,6 +128,7 @@ export default function CampaignCreationForm(){
           Start adventuring!
         </Button>
       </div>
+      {formError && <span className={style.errorText}>{formError}</span>}
     </form>
   )
 }

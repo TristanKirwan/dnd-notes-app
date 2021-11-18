@@ -20,7 +20,15 @@ function NoCampaignsMarkup(){
 }
 
 export default function CampaignOverviewSection({campaigns}){
+  const [mappableCampaigns, setMappableCampaigns] = useState(campaigns)
   const [showCreationForm, setShowCreationForm] = useState(false)
+
+  function onSuccessFulCampaignAddition(result){
+    const newMappableCampaigns = [...mappableCampaigns]
+    newMappableCampaigns.push(result)
+    setMappableCampaigns(newMappableCampaigns)
+    setShowCreationForm(false)
+  }
 
   return (
     <section className={style.campaignOverviewSection}>
@@ -30,13 +38,21 @@ export default function CampaignOverviewSection({campaigns}){
             <Link onClick={() => setShowCreationForm(false)} linkClass={style.backToOverviewButton}>
               <i className={clsx(["fas fa-long-arrow-alt-left", style.arrow])}></i>Go back
             </Link>
-            <CampaignCreationForm />
+            <CampaignCreationForm successCallBack={onSuccessFulCampaignAddition}/>
           </Container>
         </div>
       : 
         <Container containerClass={clsx([style.container, style.campaignCardContainer])}>
-          {!Array.isArray(campaigns) || campaigns.length === 0 && <NoCampaignsMarkup />}
-          {Array.isArray(campaigns) && campaigns.map(campaign => <CampaignCard title={campaign.title} users={campaign.users} id={campaign.id}/>)}
+          {!Array.isArray(mappableCampaigns) || mappableCampaigns.length === 0 && <NoCampaignsMarkup />}
+          {Array.isArray(mappableCampaigns) && mappableCampaigns.map(campaign => <CampaignCard
+            title={campaign.title}
+            description={campaign.description}
+            type={campaign.type}
+            dm={campaign.dm}
+            users={campaign.users}
+            id={campaign.id}
+            key={campaign.id}/>
+          )}
           <div className={style.buttonContainer}>
             <Button callBack={() => setShowCreationForm(true)}>Create a campaign</Button>
           </div>
