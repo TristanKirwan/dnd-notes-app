@@ -47,11 +47,11 @@ export default function CampaignDetailSection({title, description, startDate, dm
             {capitalizeWord(type)}
           </span>
           <span className={style.metaInstance}>
-            <Icon type="d20" className={style.icon}/>
+            <Icon type="d20" className={style.icon} />
             {dm}
           </span>
           <span className={style.metaInstance}>
-            <Icon type="clock" className={style.icon}/>
+            <Icon type="clock" className={style.icon} />
             {dateString}
           </span>
         </div>}

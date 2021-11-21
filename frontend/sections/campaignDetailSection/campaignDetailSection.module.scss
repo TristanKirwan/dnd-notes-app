@@ -4,8 +4,10 @@
   display: grid;
   grid-gap: 15px;
   margin-top: 40px;
-  grid-template-columns: 1fr max-content;
   align-items: end;
+  @include m {
+    grid-template-columns: 1fr max-content;
+  }
 }
 
 .optionsContainer {
@@ -39,6 +41,10 @@
 .metaDataContainer {
   display: grid;
   grid-gap: 5px;
+  @include m {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .metaInstance {
@@ -46,6 +52,12 @@
   align-items: center;
   .icon {
     margin-right: 15px;
+  }
+  @include m {
+    margin-right: 10px;
+    &:last-of-type {
+      margin-right: 0px;
+    }
   }
 }
 
