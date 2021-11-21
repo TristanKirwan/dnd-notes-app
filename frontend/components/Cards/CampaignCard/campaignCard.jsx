@@ -1,6 +1,8 @@
 import GenericCard from '../genericCard';
 import Icon from '../../Icon/icon';
 
+import getCampaignIcon from '../../../utils/getCampaignIcon'
+
 import style from './campaignCard.module.scss';
 
 export default function CampaignCard({title = '', description= '', dm = '', users = [], id='', type='classic'}){
@@ -19,14 +21,9 @@ export default function CampaignCard({title = '', description= '', dm = '', user
     </div>
   </div>
 
-  const iconmapping = {
-    'oneshot': 'shotSkull',
-    'homebrew': 'beertankard',
-    'classic': 'campaign'
-  }
-
+  const iconType = getCampaignIcon(type)
 
   return(
-    <GenericCard title={title} icon={iconmapping[type] || 'campaign'} link={`/account/campaigns/${id}`} extraContent={extraContent} description={description} footerText="View campaign"/>
+    <GenericCard title={title} icon={iconType} link={`/campaigns/${id}`} extraContent={extraContent} description={description} footerText="View campaign"/>
   )
 }

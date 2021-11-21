@@ -2,7 +2,7 @@ import express from'express';
 import bodyParser from 'body-parser';
 
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, query, where  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, query, where, Timestamp  } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -122,7 +122,6 @@ app.get('/getCampaigns', authenticateToken, async(req, res) => {
 })
 
 app.post('/addCampaign', authenticateToken, async(req,res) => {
-  const { username } = req.user
   const { title, dm, description, type, users } = req.body
   try {
     await runTransaction(db, async (transaction) => {
@@ -154,12 +153,14 @@ app.post('/addCampaign', authenticateToken, async(req,res) => {
         })
       }
 
+      const currentDate = Timestamp.now();
       await transaction.set(campaignDocRef, {
         title: title,
         description: description,
         type: type,
         dm: dmDoc,
-        users: usersArray
+        users: usersArray,
+        startDate: currentDate
       })
 
       res.status(200).send({
@@ -185,6 +186,34 @@ app.get('/users/:id', async(req, res) => {
     return res.status(500).send({message: `User ${id} does not exist in the database!`})
   } else {
     return res.status(200).send({success: true})
+  }
+})
+
+app.get('/campaign/:id', authenticateToken, async(req, res) => {
+  const { username } = req.user
+  const { id } = req.params
+ 
+  const campaignDoc = doc(db, 'campaigns', `${id}`);
+  const campaignDocSnap = await getDoc(campaignDoc);
+  if(!campaignDocSnap.exists()){
+    return res.status(404).send({message: 'The campaign with the given ID does not exist'})
+  }
+
+  const campaignData = await campaignDocSnap.data();
+  const campaignUsers = campaignData.users
+  if(!Array.isArray(campaignUsers)) {
+    return res.status(500).send({message: 'The requested document was faulty'});
+  }
+
+  const arrayUserIds = campaignUsers.map(userDoc => userDoc.id)
+  campaignData['users'] = arrayUserIds
+  campaignData['dm'] = campaignData.dm.id
+  campaignData['startDate'] = campaignData['startDate'].toDate();
+
+  if(Array.isArray(campaignData.users) && arrayUserIds.indexOf(username) >= 0) {
+    res.status(200).send(campaignData)
+  } else {
+    return res.status(403).send({message: 'User is not allowed to view this document.'})
   }
 })
 
