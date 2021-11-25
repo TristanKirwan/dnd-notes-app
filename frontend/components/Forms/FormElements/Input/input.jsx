@@ -15,7 +15,8 @@ export default function Input({
   error = null,
   passedClass = '',
   inputCallBack = null,
-  onKeyPressFunction = null
+  onKeyPressFunction = null,
+  defaultValue = null
 }){
   const [shouldShowError, setShouldShowError] = useState(false)
 
@@ -48,6 +49,7 @@ export default function Input({
         className={clsx([style.input, shouldShowError && style.hasError, passedClass])}
         onFocus={onInputTouch}
         onKeyDown={(e) => onKeyDown(e)}
+        defaultValue={defaultValue ? defaultValue : ''}
         ></input>
       {shouldShowError && <span className={style.errorText}>
         {error.text}

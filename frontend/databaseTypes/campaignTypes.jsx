@@ -5,7 +5,7 @@ export default [
   },
   {
     title: 'Classic',
-    vallue: 'classic'
+    value: 'classic'
   },
   {
     title: 'Homebrew',

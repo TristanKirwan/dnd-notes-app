@@ -2,7 +2,7 @@ import express from'express';
 import bodyParser from 'body-parser';
 
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, query, where, Timestamp  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, query, where, Timestamp, updateDoc  } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -30,6 +30,7 @@ function authenticateToken(req,res,next) {
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
   next();
 });
@@ -209,12 +210,77 @@ app.get('/campaign/:id', authenticateToken, async(req, res) => {
   campaignData['users'] = arrayUserIds
   campaignData['dm'] = campaignData.dm.id
   campaignData['startDate'] = campaignData['startDate'].toDate();
+  campaignData['id'] = campaignDoc.id
 
   if(Array.isArray(campaignData.users) && arrayUserIds.indexOf(username) >= 0) {
     res.status(200).send(campaignData)
   } else {
     return res.status(403).send({message: 'User is not allowed to view this document.'})
   }
+})
+
+app.put('/campaign/:id', authenticateToken, async(req,res) => {
+  const { username } = req.user;
+  const { id } = req.params;
+  
+  const { title, type, dm, description, users } = req.body
+
+  const campaignDoc = doc(db, 'campaigns', `${id}`);
+  const campaignDocSnap = await getDoc(campaignDoc);
+  if(!campaignDocSnap.exists()) {
+    console.error('The campaign that was trying to be edited does not exist.')
+    return res.status(404).send({message: 'The campaign with the given ID does not exist'})
+  }
+
+  const campaignData = await campaignDocSnap.data();
+
+  const dmOfCampaign = campaignData.dm;
+  const dmUserDocSnap = await getDoc(dmOfCampaign)
+  if(!dmUserDocSnap.exists()) {
+    console.error('The DM of this campaign does not exist');
+    return res.status(500).send({message: "The DM of this campaign does not exist."})
+  }
+
+  if(dmUserDocSnap.id !== username) {
+    console.error(`The user ${username} is not authorized to edit campaign with ID:${campaignDocSnap.id}`)
+    return res.status(403).send({message: `The user ${username} is not authorized to edit campaign with ID:${campaignDocSnap.id}`})
+  }
+
+  let dmDoc = null;
+  const usersDocRefs = [] 
+
+  for(let i = 0; i < users.length; i++) {
+    const currentUser = users[i];
+    const userDocRef = doc(db, 'users', currentUser);
+    const userDoc = await getDoc(userDocRef);
+    if(!userDoc.exists()) {
+      return res.status(500).send({message: `User: ${currentUser} does not exist in the database.`})
+    }
+    if(currentUser === dm) {
+      dmDoc = userDocRef
+    }
+    usersDocRefs.push(userDocRef)
+  }
+
+
+  await updateDoc(campaignDoc, {
+    description: description,
+    dm: dmDoc,
+    title: title,
+    type: type,
+    users: usersDocRefs
+  })
+
+
+  const responseObject = {
+    title: title,
+    description: description,
+    dm: dm,
+    type: type,
+    users: users
+  }
+
+  res.status(200).send(responseObject)
 })
 
 app.listen(port, '0.0.0.0', () => {

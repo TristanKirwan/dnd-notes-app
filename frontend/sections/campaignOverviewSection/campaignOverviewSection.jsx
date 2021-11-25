@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 import Container from '../../components/Container/container';
 import Button from '../../components/Button/button';
-import Link from '../../components/Link/link';
+import BackButton from '../../components/Backbutton/backButton';
 import CampaignCard from '../../components/Cards/CampaignCard/campaignCard';
 import CampaignCreationForm from '../../components/Forms/campaignCreationForm/campaignCreationForm';
 
@@ -30,14 +30,16 @@ export default function CampaignOverviewSection({campaigns}){
     setShowCreationForm(false)
   }
 
+  function closeCreationForm(){
+    setShowCreationForm(false)
+  }
+
   return (
     <section className={style.campaignOverviewSection}>
       {showCreationForm ? 
         <div>
           <Container containerClass={style.container}>
-            <Link onClick={() => setShowCreationForm(false)} linkClass={style.backToOverviewButton}>
-              <i className={clsx(["fas fa-long-arrow-alt-left", style.arrow])}></i>Go back
-            </Link>
+            <BackButton callBack={closeCreationForm}/>
             <CampaignCreationForm successCallBack={onSuccessFulCampaignAddition}/>
           </Container>
         </div>

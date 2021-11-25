@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import dlv from 'dlv';
 import clsx from 'clsx';
 import axios from 'axios';
 
@@ -15,19 +16,38 @@ import makeAuthorizedRequest from '../../../utils/makeAuthorizedRequest'
 
 import style from './campaignCreationForm.module.scss';
 
-export default function CampaignCreationForm({successCallBack}){
+export default function CampaignCreationForm({successCallBack, isEditForm = false, campaignData = null}){
   const { state } = useStore();
   const { accountDetails } = state
 
+  const campaignTitle = dlv(campaignData, 'title', '');
+  const campaignType = dlv(campaignData, 'type', 'oneshot');
+  const campaignDescription = dlv(campaignData, 'description', '');
+  const campaignDM = dlv(campaignData, 'dm', null)
+
   const [usersToInvite, setUsersToInvite] = useState([])
   const [userToInviteError, setUserToInviteError] = useState(null)
-  const [formError, setFormError] = useState(null)
+  const [currentDM, setCurrentDm] = useState(null)
+
 
   useEffect(() => {
-    if(accountDetails && accountDetails.username) {
+    if(accountDetails && accountDetails.username && !isEditForm) {
       setUsersToInvite([accountDetails.username])
+      setCurrentDm(accountDetails.username)
     }
   }, [state])
+
+  useEffect(() => {
+    //If this is the edit form, we need to manually set the state, the other values are handled by the input forms themselves.
+    if(isEditForm) {
+      if(Array.isArray(campaignData.users) && campaignData.users.length > 0) {
+        setUsersToInvite(campaignData.users)
+      }
+      if(campaignData && campaignData.dm) {
+        setCurrentDm(campaignData.dm)
+      }
+    }
+  }, [])
 
   function addPlayerToCampaignInput(e){
     if(!e || e.keyCode !== 13) return;
@@ -66,13 +86,29 @@ export default function CampaignCreationForm({successCallBack}){
   }
 
   function generateDMOptions(){
-    const users = [...usersToInvite];
-    const dropdownOptions = users.map(user => ({
+    //For first render in edit form, we want to have the default options of all users connected to this campaign, so we generate a list of options from campaignData props.
+
+    if(usersToInvite && Array.isArray(usersToInvite) && usersToInvite.length > 0) {
+      const users = [...usersToInvite];
+      const dropdownOptions = users.map(user => ({
+          title: user,
+          value: user
+        })
+      )
+      return dropdownOptions
+
+    } else if(campaignData && Array.isArray(campaignData.users) && campaignData.users.length > 0) {
+      const users = campaignData.users;
+      const dropdownOptions = users.map(user => ({
         title: user,
         value: user
       })
     )
     return dropdownOptions
+    }
+
+    return []
+
   }
 
   function createCampaign(e){
@@ -86,31 +122,48 @@ export default function CampaignCreationForm({successCallBack}){
     
     //The players don't actually come from the form, we have them saved in the state. By not giving the input a name we don't get it in the formdata.
     finalFormData['users'] = usersToInvite
-    makeAuthorizedRequest('addCampaign', finalFormData)
-    .then(res => {
-      successCallBack(res.data)
-    })
-    .catch(err => {
-      console.error('Something went wrong trying to add the campaign. Please try again later')
-    })
+
+    if(isEditForm) {
+      if(!campaignData && campaignData.id) {
+        console.error('Something is wrong with the data of this form.')
+        return
+      }
+      makeAuthorizedRequest(`campaign/${campaignData.id}`, finalFormData, null, 'PUT')
+      .then(res => {
+        successCallBack(res.data)
+      })
+      .catch(() => {
+        console.error('Something went wrong trying to edit the campaign. Please try again later')
+      })
+
+    } else {
+      makeAuthorizedRequest('addCampaign', finalFormData)
+      .then(res => {
+        successCallBack(res.data)
+      })
+      .catch(err => {
+        console.error('Something went wrong trying to add the campaign. Please try again later')
+      })
+    }
+
   }
 
   return (
     <form className={style.campaignCreationForm} onSubmit={createCampaign}>
       <div>
-        <Input type="text" required hasLabel labelText={"Campaign title"} id="campaign-creation-title" name="title"></Input>
+        <Input type="text" required hasLabel labelText={"Campaign title"} id="campaign-creation-title" name="title" defaultValue={campaignTitle}></Input>
       </div>
       <div>
-        <Dropdown options={campaignTypes} required label="Campaign type" id="campaign-creation-type" name="type"/> 
+        <Dropdown options={campaignTypes} required label="Campaign type" id="campaign-creation-type" name="type" defaultValue={campaignType}/> 
       </div>
       <div>
-        <Dropdown options={generateDMOptions()} required label="Dungeon master" id="campaign-creation-dm" name="dm"/> 
+        <Dropdown options={generateDMOptions()} required label="Dungeon master" id="campaign-creation-dm" name="dm" defaultValue={campaignDM} onChangeCallback={val => setCurrentDm(val)}/> 
       </div>
       <div>
         <Input type="text" hasLabel labelText={"Add a player"} id="campaign-creation-dm" onKeyPressFunction={addPlayerToCampaignInput} error={userToInviteError}></Input>
       </div>
       <div className={clsx([, style.fullWidth])}>
-        <TextArea rows="10" hasLabel labelText={"Campaign description"} id="campaign-creation-description" name="description"></TextArea>      
+        <TextArea rows="10" hasLabel labelText={"Campaign description"} id="campaign-creation-description" name="description" defaultValue={campaignDescription}></TextArea>      
       </div>
       <div className={style.fullWidth}>
         <span className={style.usersContainerHeader}><Icon type="users" className={style.icon}/>Adventurers & Participants</span>
@@ -118,17 +171,16 @@ export default function CampaignCreationForm({successCallBack}){
           {usersToInvite.map(user => 
             <span className={style.singleUserCotainer} key={user}>
               <span>{user}</span>
-              <DeleteCircle onClick={() => deleteUserFromCampaign(user)} className={style.deleteIcon} disabled={user === accountDetails.username}/>
+              <DeleteCircle onClick={() => deleteUserFromCampaign(user)} className={style.deleteIcon} disabled={user === accountDetails.username || user === currentDM}/>
             </span>)
           }
         </div>
       </div>
       <div className={clsx([style.fullWidth, style.buttonContainer])}>
         <Button type="submit">
-          Start adventuring!
+          {isEditForm ? "Resume adventuring!" : "Start adventuring!"}
         </Button>
       </div>
-      {formError && <span className={style.errorText}>{formError}</span>}
     </form>
   )
 }

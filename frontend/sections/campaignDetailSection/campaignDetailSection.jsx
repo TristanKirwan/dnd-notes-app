@@ -1,66 +1,36 @@
-import Container from '../../components/Container/container';
-import Icon from '../../components/Icon/icon'
+import { useEffect, useState } from 'react';
 
-import getDateString from '../../utils/getDateString';
-import getCampaignIcon from '../../utils/getCampaignIcon';
-import capitalizeWord from '../../utils/capitalizeWord'
+import PageTitle from '../../components/PageTitle/pageTitle';
+import BackButton from '../../components/Backbutton/backButton';
+import Container from '../../components/Container/container';
+import CampaignCreationForm from '../../components/Forms/campaignCreationForm/campaignCreationForm';
+import CampaignDetailBlock from '../../components/CampaignDetailBlock/campaignDetailBlock'
 
 import style from './campaignDetailSection.module.scss';
 
-export default function CampaignDetailSection({title, description, startDate, dm, users, type}) {
-  const showMetaData = startDate || dm || users;
-  const dateString = getDateString(startDate)
-  
-  const iconType = getCampaignIcon(type)
+export default function CampaignDetailSection(campaign) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [campaignToShow, setCampaignToShow] = useState(null)
+
+  useEffect(() => {
+    setCampaignToShow(campaign)
+  }, [])
 
   // TODO: Add related notes, tags, characters!
 
-
-  function editCampaign(){
-    console.log('editing')
+  function editSuccessCallback(campaignInfo){
+    setIsEditing(false)
+    setCampaignToShow({...campaign, ...campaignInfo})
   }
-
-  function deleteCampaign() {
-    console.log('deleting')
-  }
-
 
   return (
     <section>
-      <Container containerClass={style.container}>
-        <div className={style.campaignHeader}>
-          {title && <h1 className={style.campaignTitle}>{title}</h1> }
-          <div className={style.optionsContainer}>
-            <button onClick={editCampaign} className={style.changeCampaignButton}>
-              <Icon type="spanner" className={style.icon}/>
-              Edit 
-            </button>
-            <button onClick={deleteCampaign} className={style.changeCampaignButton}>
-              <Icon type="trash" className={style.icon}/>
-              Delete
-            </button>
-          </div>
-        </div>
-        {showMetaData && <div className={style.metaDataContainer}>
-          <span className={style.metaInstance}>
-            <Icon type={iconType} className={style.icon}/>
-            {capitalizeWord(type)}
-          </span>
-          <span className={style.metaInstance}>
-            <Icon type="d20" className={style.icon} />
-            {dm}
-          </span>
-          <span className={style.metaInstance}>
-            <Icon type="clock" className={style.icon} />
-            {dateString}
-          </span>
-        </div>}
-        {description && <p className={style.description}>{description}</p>}
-        {Array.isArray(users) && users.length > 0 && <div className={style.usersContainer}>
-          <Icon type="users" className={style.icon}/>
-          {users.map(user => <span key={user} className={style.userInstance}>{user}</span>)}
-        </div>}
-      </Container>
+      {isEditing ? <Container containerClass={style.container}>
+            <PageTitle>Editing: {campaignToShow.title}</PageTitle>
+            <BackButton callBack={() => setIsEditing(false)}/>
+            <CampaignCreationForm successCallBack={editSuccessCallback} isEditForm campaignData={campaignToShow}/>
+          </Container>:
+      <CampaignDetailBlock campaign={campaignToShow} editCallBack={() => setIsEditing(true)}/>}
     </section>
   )
 }

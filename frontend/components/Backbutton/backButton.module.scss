@@ -1,0 +1,13 @@
+.backToOverviewButton {
+  &:hover {
+    .arrow {
+      transform: translateX(-5px);
+    }
+  }
+}
+
+.arrow {
+  margin-right: 15px;
+  transition: transform 0.2s linear;
+  transform: translateX(0px);
+}

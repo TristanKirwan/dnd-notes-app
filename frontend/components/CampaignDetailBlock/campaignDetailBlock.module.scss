@@ -1,0 +1,74 @@
+@import '../../styles/imports.scss';
+
+.campaignHeader {
+  display: grid;
+  grid-gap: 15px;
+  margin-top: 40px;
+  align-items: end;
+  @include m {
+    grid-template-columns: 1fr max-content;
+  }
+}
+
+.optionsContainer {
+  display: grid;
+  grid-gap: 25px;
+  grid-template-columns: repeat(2, max-content);
+}
+
+.changeCampaignButton {
+  opacity: 0.2;
+  font-size: 1.6rem;
+  .icon {
+    width: 15px;
+    margin-right: 5px;
+  }
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.campaignTitle {
+  @include fontWeight(600);
+}
+
+.container {
+  display: grid;
+  grid-gap: 35px;
+}
+
+.metaDataContainer {
+  display: grid;
+  grid-gap: 5px;
+  @include m {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.metaInstance {
+  display: flex;
+  align-items: center;
+  .icon {
+    margin-right: 15px;
+  }
+  @include m {
+    margin-right: 10px;
+    &:last-of-type {
+      margin-right: 0px;
+    }
+  }
+}
+
+.icon {
+  display: inline-block;
+  width: 25px;
+}
+
+.usersContainer {
+  display: grid;
+  grid-auto-columns: max-content;
+  grid-gap: 15px;
+  grid-auto-flow: column;
+}

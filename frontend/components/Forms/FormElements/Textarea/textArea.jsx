@@ -14,7 +14,8 @@ export default function TextArea({
   error = null,
   passedClass = '',
   inputCallBack = null,
-  rows = 10
+  rows = 10,
+  defaultValue = null
 }){
   const [shouldShowError, setShouldShowError] = useState(false)
 
@@ -41,7 +42,9 @@ export default function TextArea({
         className={clsx([style.input, shouldShowError && style.hasError, passedClass, style.textArea])}
         onFocus={onInputTouch}
         rows={rows}
-        ></textarea>
+        defaultValue={defaultValue ? defaultValue : ''}
+        >
+        </textarea>
       {shouldShowError && <span className={style.errorText}>
         {error.text}
         {Array.isArray(error.listItems) && error.listItems.length > 0 && <ul>
