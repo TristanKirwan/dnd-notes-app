@@ -30,7 +30,7 @@ export default function CampaignDetailSection(campaign) {
             <BackButton callBack={() => setIsEditing(false)}/>
             <CampaignCreationForm successCallBack={editSuccessCallback} isEditForm campaignData={campaignToShow}/>
           </Container>:
-      <CampaignDetailBlock campaign={campaignToShow} editCallBack={() => setIsEditing(true)}/>}
+      <CampaignDetailBlock campaign={campaignToShow} editCallBack={() => setIsEditing(true)} mayEditForm={true}/>}
     </section>
   )
 }

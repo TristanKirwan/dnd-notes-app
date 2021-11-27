@@ -16,6 +16,22 @@
   grid-template-columns: repeat(2, max-content);
 }
 
+.buttonWrapper {
+  position: relative;
+}
+
+.disabledButtonWrapper {
+  &:hover {
+    button {
+      cursor: not-allowed;
+      opacity: 0.2;
+    }
+    .notAllowedOverlay {
+      display: inline-block;
+    }
+  }
+}
+
 .changeCampaignButton {
   opacity: 0.2;
   font-size: 1.6rem;
@@ -26,6 +42,37 @@
   transition: opacity 0.2s;
   &:hover {
     opacity: 1;
+  }
+  &.disabled {
+    &:hover {
+      opacity: 0.2;
+    }
+  }
+}
+
+.notAllowedOverlay {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translate(-50%, calc(100% + 5px));
+  padding: 10px 10px;
+  border: 1px solid var(--color-white);
+  white-space: nowrap;
+  z-index: 1;
+  background-color: var(--color-black);
+  &:before {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    content: '';
+    width: 5px;
+    height: 5px;
+    background-color: var(--color-black);
+    border-left: 1px solid var(--color-white);
+    border-top: 1px solid var(--color-white);
+    transform: translateY(-4px) translateX(-50%) rotate(45deg);
   }
 }
 

@@ -1,4 +1,5 @@
 import cookies from 'next-cookies';
+import jwt from 'jsonwebtoken'
 
 import CampaignDetailSection from '../../../sections/campaignDetailSection/campaignDetailSection';
 
@@ -27,11 +28,17 @@ export async function getServerSideProps(context) {
       Location: '/404',
     })
     res.end();
-
     return {props:{}}
   })
 
-  return {props: campaignResult}
+  const decodedJWT = jwt.decode(accessToken);
+  const username = decodedJWT.username
+  const isUserDm = campaignResult.dm && campaignResult.dm === username
+
+  return {props: {
+    ...campaignResult,
+    isUserDm
+  }}
 }
 
 export default function CampaignPage(props) {

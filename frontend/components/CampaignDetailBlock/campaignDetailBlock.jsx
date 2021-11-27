@@ -1,16 +1,18 @@
 import Container from '../Container/container';
 import Icon from '..//Icon/icon'
+import clsx from 'clsx';
 
 // import getDateString from '../../utils/getDateString';
 import getDateString from '../../utils/getDateString';
 import getCampaignIcon from '../../utils/getCampaignIcon';
 import capitalizeWord from '../../utils/capitalizeWord'
 
+
 import style from './campaignDetailBlock.module.scss'
 
 
-export default function CampaignDetailBlock({campaign, editCallBack, deleteCallBack}){
-  const { title, description, startDate, dm, users, type } = campaign
+export default function CampaignDetailBlock({campaign, editCallBack, deleteCallBack, mayEditForm}){
+  const { title, description, startDate, dm, users, type } = campaign || {}
   const showMetaData = startDate || dm || users;
   const dateString = getDateString(startDate)
   
@@ -25,14 +27,20 @@ export default function CampaignDetailBlock({campaign, editCallBack, deleteCallB
         <div className={style.campaignHeader}>
           {title && <h1 className={style.campaignTitle}>{title}</h1> }
           <div className={style.optionsContainer}>
-            <button onClick={editCallBack} className={style.changeCampaignButton}>
-              <Icon type="spanner" className={style.icon}/>
-              Edit 
-            </button>
-            <button onClick={deleteCampaign} className={style.changeCampaignButton}>
-              <Icon type="trash" className={style.icon}/>
-              Delete
-            </button>
+            <div className={clsx([style.buttonWrapper, !mayEditForm && style.disabledButtonWrapper])}>
+              <button onClick={mayEditForm ? editCallBack : null} className={style.changeCampaignButton}>
+                <Icon type="spanner" className={style.icon}/>
+                Edit 
+              </button>
+              {!mayEditForm && <span className={style.notAllowedOverlay}>Only the DM may edit the campaign</span>}
+            </div>
+            <div className={clsx([style.buttonWrapper, !mayEditForm && style.disabledButtonWrapper])}>
+              <button onClick={mayEditForm ? deleteCampaign : null} className={style.changeCampaignButton}>
+                <Icon type="trash" className={style.icon}/>
+                Delete
+              </button>
+              {!mayEditForm && <span className={style.notAllowedOverlay}>Only the DM may delete the campaign</span>}
+            </div>
           </div>
         </div>
         {showMetaData && <div className={style.metaDataContainer}>
