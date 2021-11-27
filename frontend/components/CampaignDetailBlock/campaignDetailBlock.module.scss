@@ -54,25 +54,33 @@
   display: none;
   position: absolute;
   bottom: 0px;
-  left: 50%;
-  transform: translate(-50%, calc(100% + 5px));
   padding: 10px 10px;
+  transform: translateY(calc(100% + 5px));
   border: 1px solid var(--color-white);
   white-space: nowrap;
   z-index: 1;
   background-color: var(--color-black);
+  left: 0px;
+  @include m {
+    left: 50%;
+    transform: translate(-50%, calc(100% + 5px));
+  }
   &:before {
     display: inline-block;
     position: absolute;
     top: 0px;
-    left: 50%;
+    left: 2px;
     content: '';
     width: 5px;
     height: 5px;
     background-color: var(--color-black);
     border-left: 1px solid var(--color-white);
     border-top: 1px solid var(--color-white);
-    transform: translateY(-4px) translateX(-50%) rotate(45deg);
+    transform: translateY(-4px) rotate(45deg);
+    @include m {
+      left: 50%;
+      transform: translateY(-4px) translateX(-50%) rotate(45deg);
+    }
   }
 }
 
