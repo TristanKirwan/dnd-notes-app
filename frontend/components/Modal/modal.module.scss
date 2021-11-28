@@ -1,0 +1,47 @@
+@import '../../styles/imports.scss';
+
+.modalWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 101;
+  background-color: var(--color-black-2);
+  opacity: 0.6;
+}
+
+.modalContent {
+  position: relative;
+  display: grid;
+  grid-gap: 25px;
+  padding: 35px 25px 25px 25px;
+  z-index: 102;
+  background-color: var(--color-black-3);
+  width: 90%;
+  max-width: 600px;
+  border-radius: 25px;
+  @include m {
+    max-width: 800px;
+    width: auto;
+    min-width: 500px;
+  }
+}
+
+.deleteButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}

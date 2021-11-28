@@ -42,7 +42,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function CampaignPage(props) {
-  console.log(props)
   return (
     <>
       <CampaignDetailSection {...props}/>

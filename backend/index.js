@@ -2,7 +2,7 @@ import express from'express';
 import bodyParser from 'body-parser';
 
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, query, where, Timestamp, updateDoc  } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, getDocs, addDoc, collection, runTransaction, arrayUnion, arrayRemove, query, where, Timestamp, updateDoc, deleteDoc  } from 'firebase/firestore';
 import bcrypt from 'bcrypt';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -30,7 +30,7 @@ function authenticateToken(req,res,next) {
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, authorization");
   next();
 });
@@ -281,6 +281,55 @@ app.put('/campaign/:id', authenticateToken, async(req,res) => {
   }
 
   res.status(200).send(responseObject)
+})
+
+app.delete('/campaign/:id',  authenticateToken, async(req,res) => { 
+  const { username } = req.user;
+  const { id } = req.params;
+
+  
+  //Actually delete in transaction (also delete campaign ID from the users its connected to.)
+  try {
+    await runTransaction(db, async(transaction) => {
+      const campaignDoc = doc(db, 'campaigns', id);
+      const campaignDocSnap = await transaction.get(campaignDoc);
+      
+      if(!campaignDocSnap.exists()){
+        return res.status(500).send({message: `Campaign with id: ${id} was not found in the database`});
+      }
+    
+      const campaignData = campaignDocSnap.data();
+      const dmDOcOfCampaign = campaignData.dm;
+      const dmId = dmDOcOfCampaign.id;
+    
+      if(dmId !== username) {
+        return res.status(403).send({message: 'Only the DM of the campaign may delete the campaign.'})
+      }
+      if(!Array.isArray(campaignData.users)) {
+        return res.status(500).send({message: `${id} does not contain correct data.`})
+      }
+
+      // Delete the campaign reference from the connected users.
+      for(let i=0; i < campaignData.users.length; i ++) {
+        const userDoc = campaignData.users[i]
+        await transaction.update(userDoc, {
+          campaigns: arrayRemove(campaignDoc)
+        })
+      }
+
+      //Remove the campaign document from the database.
+      await transaction.delete(campaignDoc)
+      return res.status(200).send({message: `Campaign with id: ${id} has been deleted from the database.`})
+
+    })
+  } catch (error) {
+    console.error('Delete campaign transaction failed with error:', error)
+    res.status(500).send({
+      message: error
+    })
+  }
+
+
 })
 
 app.listen(port, '0.0.0.0', () => {
