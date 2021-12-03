@@ -53,18 +53,6 @@ export default function CampaignDetailSection(campaign) {
 
   return (
     <section>
-      {isEditing ? <Container containerClass={style.container}>
-            <PageTitle>Editing: {campaignToShow.title}</PageTitle>
-            <BackButton callBack={() => setIsEditing(false)}/>
-            <CampaignCreationForm successCallBack={editSuccessCallback} isEditForm campaignData={campaignToShow}/>
-          </Container>:
-      <CampaignDetailBlock 
-        campaign={campaignToShow} 
-        // mayEditCampaign={campaign.isUserDm}
-        mayEditCampaign={true}
-        editCallBack={() => setIsEditing(true)} 
-        deleteCallBack={toggleDeleteModal}
-      />}
       {showDeleteModal && <Modal closeCallback={toggleDeleteModal}>
         <span className={style.deleteModalHeader}>Are you sure you want to delete <span className={style.modalCampaignTitle}>{campaignToShow.title}</span>?</span>
         <p className={style.modalBody}>
@@ -80,6 +68,22 @@ export default function CampaignDetailSection(campaign) {
           </Button>
         </div>
       </Modal>}
+      {isEditing ? <Container containerClass={style.container}>
+            <PageTitle>Editing: {campaignToShow.title}</PageTitle>
+            <BackButton callBack={() => setIsEditing(false)}/>
+            <CampaignCreationForm successCallBack={editSuccessCallback} isEditForm campaignData={campaignToShow}/>
+          </Container> 
+        :
+          <>
+            <CampaignDetailBlock 
+              campaign={campaignToShow} 
+              // mayEditCampaign={campaign.isUserDm}
+              mayEditCampaign={true}
+              editCallBack={() => setIsEditing(true)} 
+              deleteCallBack={toggleDeleteModal}
+            />
+            <CharactersBlock characters={[]}/>
+          </>}
     </section>
   )
 }
