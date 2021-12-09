@@ -328,8 +328,40 @@ app.delete('/campaign/:id',  authenticateToken, async(req,res) => {
       message: error
     })
   }
+})
 
+app.post('/characters', authenticateToken, async(req,res) => {
+  const { username } = req.user;
+  const {campaignId, name, race, class: characterClass, alignment, bio} = req.body
 
+  const campaignDoc = await doc(db, 'campaigns', `${campaignId}`);
+  const campaignDocSnap = await getDoc(campaignDoc);
+  
+  if(!campaignDocSnap.exists()){
+    console.error(`Campaign with id: ${campaignId} not found!`);
+    return res.status(500).send({message: "Campaign not found in the database."});
+  }
+
+  const userDoc = await doc(db, 'users', username);
+  const campaignData = campaignDocSnap.data();
+  const campaignUsers = campaignData.users;
+
+  const userIsPartOfCampaign = campaignUsers.some(user => user.id === userDoc.id)
+  if(!userIsPartOfCampaign) {
+    console.error(`User: ${username}, is not part of campaign: ${campaignId}, and may not add characters.`)
+    return res.status(403).send({message: 'You are not part of this campaign and are not allowed to add characters to it.'})
+  }
+
+  const characterDocRef = await addDoc(collection(db, 'characters'), {
+    name,
+    race,
+    class: characterClass,
+    alignment,
+    bio,
+    author: username
+  })
+
+  return res.status(200).send({message: 'Character added to the database.'})
 })
 
 app.listen(port, '0.0.0.0', () => {

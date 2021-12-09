@@ -13,6 +13,7 @@ import Button from '../../Button/button';
 import { useStore } from '../../../store/provider';
 import campaignTypes from '../../../databaseTypes/campaignTypes'
 import makeAuthorizedRequest from '../../../utils/makeAuthorizedRequest'
+import getFormData from '../../../utils/getFormData';
 
 import style from './campaignCreationForm.module.scss';
 
@@ -113,12 +114,7 @@ export default function CampaignCreationForm({successCallBack, isEditForm = fals
 
   function createCampaign(e){
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const finalFormData = {}
-
-    for (var [key, value] of formData.entries()) { 
-      finalFormData[key] = value
-    }
+    const finalFormData = getFormData(e.target)
     
     //The players don't actually come from the form, we have them saved in the state. By not giving the input a name we don't get it in the formdata.
     finalFormData['users'] = usersToInvite
@@ -141,7 +137,7 @@ export default function CampaignCreationForm({successCallBack, isEditForm = fals
       .then(res => {
         successCallBack(res.data)
       })
-      .catch(err => {
+      .catch(() => {
         console.error('Something went wrong trying to add the campaign. Please try again later')
       })
     }
@@ -162,7 +158,7 @@ export default function CampaignCreationForm({successCallBack, isEditForm = fals
       <div>
         <Input type="text" hasLabel labelText={"Add a player"} id="campaign-creation-dm" onKeyPressFunction={addPlayerToCampaignInput} error={userToInviteError}></Input>
       </div>
-      <div className={clsx([, style.fullWidth])}>
+      <div className={clsx([style.fullWidth])}>
         <TextArea rows="10" hasLabel labelText={"Campaign description"} id="campaign-creation-description" name="description" defaultValue={campaignDescription}></TextArea>      
       </div>
       <div className={style.fullWidth}>
