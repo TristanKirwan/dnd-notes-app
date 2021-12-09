@@ -206,11 +206,23 @@ app.get('/campaign/:id', authenticateToken, async(req, res) => {
     return res.status(500).send({message: 'The requested document was faulty'});
   }
 
+  const campaignCharacters = campaignData.characters || [];
+  const charactersData = []
+  for(let i = 0; i < campaignCharacters.length; i++) {
+    const characterDoc = doc(db, 'characters', campaignCharacters[i].id);
+    const characterDocSnap =  await getDoc(characterDoc);
+    const characterData = characterDocSnap.data();
+    characterData.author = characterData.author.id;
+    characterData.id = campaignCharacters[i].id;
+    charactersData.push(characterData)
+  }
+
   const arrayUserIds = campaignUsers.map(userDoc => userDoc.id)
   campaignData['users'] = arrayUserIds
   campaignData['dm'] = campaignData.dm.id
   campaignData['startDate'] = campaignData['startDate'].toDate();
   campaignData['id'] = campaignDoc.id
+  campaignData['characters'] = charactersData;
 
   if(Array.isArray(campaignData.users) && arrayUserIds.indexOf(username) >= 0) {
     res.status(200).send(campaignData)
@@ -334,34 +346,123 @@ app.post('/characters', authenticateToken, async(req,res) => {
   const { username } = req.user;
   const {campaignId, name, race, class: characterClass, alignment, bio} = req.body
 
-  const campaignDoc = await doc(db, 'campaigns', `${campaignId}`);
-  const campaignDocSnap = await getDoc(campaignDoc);
+  try {
+    await runTransaction(db, async(transaction) => {
+      const campaignDoc = await doc(db, 'campaigns', campaignId);
+      const characterDoc = await doc(collection(db, 'characters'));
+      const userDoc = await doc(db, 'users', username)
+      
+      const campaignDocSnap = await transaction.get(campaignDoc);
+      const userDocSnap = await transaction.get(userDoc);
+      
+      if(!campaignDocSnap.exists()){
+        console.error(`Campaign with id: ${campaignId} not found!`);
+        return res.status(500).send({message: "Campaign not found in the database."});
+      }
+
+      if(!userDocSnap.exists()) {
+        console.error(`User with id: ${username} not found!`);
+        return res.status(500).send({message: "Author user not found in the database"})
+      }
+
+      const campaignData = campaignDocSnap.data();
+      const campaignUsers = campaignData.users;
+
+      const userIsPartOfCampaign = campaignUsers.some(user => user.id === username)
+      if(!userIsPartOfCampaign) {
+        console.error(`User: ${username}, is not part of campaign: ${campaignId}, and may not add characters.`)
+        return res.status(403).send({message: 'You are not part of this campaign and are not allowed to add characters to it.'})
+      }
+
+      await transaction.set(characterDoc, {
+        name,
+        race,
+        class: characterClass,
+        alignment,
+        bio,
+        author: userDoc
+      })
+
+      await transaction.update(campaignDoc, {
+        characters: arrayUnion(characterDoc)
+      })
+      
+
+      return res.status(200).send({message: 'Character added to the database.'})
+
+
+
+    })
+  } catch (error) { 
+    console.error(error);
+    return res.status(500).send({message: "Something went wrong trying to add the character to the campaign."})
+  }
+})
+
+app.put('/characters/:id', authenticateToken, async(req,res) => {
+  const { username } = req.user;
+  const { id } = req.params;
+
+  const { name, race, class: characterClass, alignment, bio, campaignId } = req.body;
+
+  const characterDoc = doc(db, 'characters', id);
+  const characterDocSnap = await getDoc(characterDoc);
+
+  if(!characterDocSnap.exists()) {
+    return res.status(500).send({message: `The character with id: ${id} does not exist in the database and cannot be updated`});
+  }
+
+  const characterData = characterDocSnap.data();
+  const { author } = characterData;
+
+  // We only allow the author of the character and the DM to edit the character.
+  let mayEditCharacterDoc = false;
   
-  if(!campaignDocSnap.exists()){
-    console.error(`Campaign with id: ${campaignId} not found!`);
-    return res.status(500).send({message: "Campaign not found in the database."});
+  if(username === author.id){
+    mayEditCharacterDoc = true;
+  } else {
+    //If the requester is not the author, we check if it is the DM of the campaign this character is part of.
+    const campaignDoc = doc(db, 'campaigns', campaignId);
+    const campaignDocSnap = await getDoc(campaignDoc);
+    
+    if(!campaignDocSnap.exists()){
+      // The requester is not the character author and we can't check if it is the DM of the campaign, so we don't allow the edit.
+      return res.status(500).send({message: `The campaign with the id: ${campaignId} does not exist in the database, as such the request cannot be authorized.`})
+    }
+
+    const campaignData = campaignDocSnap.data();
+    const { dm } = campaignData;
+    if(username === dm.id) {
+      mayEditCharacterDoc = true;
+    }
+  }
+  
+  //We check if the var was set to true, if not we return immediately.
+  if(!mayEditCharacterDoc) {
+    return res.status(403).send({message: `This user is not allowed to edit the character with id: ${id}`})
   }
 
-  const userDoc = await doc(db, 'users', username);
-  const campaignData = campaignDocSnap.data();
-  const campaignUsers = campaignData.users;
+  await updateDoc(characterDoc, {
+    name,
+    race,
+    class: characterClass,
+    alignment,
+    bio
+  }).catch(() => {
+    return res.status(500).send({message: `Something went wrong while updating character with id: ${id}`});
+  })
 
-  const userIsPartOfCampaign = campaignUsers.some(user => user.id === userDoc.id)
-  if(!userIsPartOfCampaign) {
-    console.error(`User: ${username}, is not part of campaign: ${campaignId}, and may not add characters.`)
-    return res.status(403).send({message: 'You are not part of this campaign and are not allowed to add characters to it.'})
-  }
-
-  const characterDocRef = await addDoc(collection(db, 'characters'), {
+  const responseObject = {
     name,
     race,
     class: characterClass,
     alignment,
     bio,
-    author: username
-  })
+    id
+  }
 
-  return res.status(200).send({message: 'Character added to the database.'})
+  return res.status(200).send(responseObject)
+
 })
 
 app.listen(port, '0.0.0.0', () => {

@@ -89,7 +89,7 @@ export default function CampaignDetailSection(campaign) {
               editCallBack={() => setIsEditing(true)} 
               deleteCallBack={toggleDeleteModal}
             />
-            <CharactersBlock characters={[]}/>
+            <CharactersBlock {...campaignToShow} />
           </>}
     </section>
   )
