@@ -44,8 +44,8 @@ export default function CharacterCreationForm({formCallback = null, isEditForm =
       })
     } else {
       makeAuthorizedRequest(`characters`, formData)
-      .then(() => {
-        if(formCallback) formCallback(formData);
+      .then((res) => {
+        if(formCallback) formCallback(res.data);
       })
       .catch(err => {
         const message = err?.response?.data?.message || null;

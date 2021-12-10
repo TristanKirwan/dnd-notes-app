@@ -386,9 +386,17 @@ app.post('/characters', authenticateToken, async(req,res) => {
       await transaction.update(campaignDoc, {
         characters: arrayUnion(characterDoc)
       })
-      
 
-      return res.status(200).send({message: 'Character added to the database.'})
+      const responseObject = {
+        name,
+        race,
+        class: characterClass,
+        alignment,
+        bio,
+        author: userDoc.id
+      }
+      
+      return res.status(200).send(responseObject)
 
 
 
@@ -462,6 +470,54 @@ app.put('/characters/:id', authenticateToken, async(req,res) => {
   }
 
   return res.status(200).send(responseObject)
+
+})
+
+
+app.delete('/characters/:id', authenticateToken, async(req,res) => {
+  const { username } = req.user;
+  const { id } = req.params;
+  const { campaignId } = req.body;
+
+  try {
+    await runTransaction(db, async(transaction) => {
+      const campaignDoc = doc(db, 'campaigns', campaignId)
+      const campaignDocSnap = await transaction.get(campaignDoc);
+      
+      if(!campaignDocSnap.exists()){
+        return res.status(500).send({message: "The campaign that a character is being deleted from does not exist in the database."})
+      }
+
+      const characterDoc = doc(db, 'characters', id)
+      const characterDocSnap = await transaction.get(characterDoc)
+
+      if(!characterDocSnap.exists()) {
+        return res.status(404).send({message: `The character with id: ${id} does not exist in the database.`})
+      }
+
+      const characterData = characterDocSnap.data();
+      const { author } = characterData;
+      //Author is a doc, whose id is equal to the username.
+      if(author.id !== username) {
+        return res.status(403).send({message: "Only the author of a character may delete the character."})
+      }
+
+      await transaction.update(campaignDoc, {
+        characters: arrayRemove(characterDoc)
+      })
+      await transaction.delete(characterDoc)
+      return res.status(200).send({
+        message: "Character successfully deleted from campaign.",
+        id: id
+      })
+
+    })
+  } catch(error) {
+    console.error(`Error trying to delete character with id: ${id}`, error)
+    res.status(500).send({
+      message: "Something went wrong while deleting this character. Please try again later."
+    })
+  }
 
 })
 

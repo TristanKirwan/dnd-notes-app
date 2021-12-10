@@ -13,21 +13,6 @@ export default function DeleteModal({
   itemName,
   bodyText
   }){
-  // const [deleteError, setDeleteError] = useState(null)
-
-
-  // function deleteCampaign(){
-  //   setDeleteError(null)
-  //   makeAuthorizedRequest(`campaign/${campaignInfo.id}`, null, null, 'DELETE')
-  //   .then(() => {
-  //     setShowDeleteModal(false);
-  //     router.push('/account/campaigns')
-  //   })
-  //   .catch(() => {
-  //     setDeleteError('Something went wrong while deleting the campaign. Please try again later.')
-  //     console.error('Something went wrong while deleting the campaign.')
-  //   })
-  // }
 
   return(
     <Modal closeCallback={toggleDeleteModal}>
