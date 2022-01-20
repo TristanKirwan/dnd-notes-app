@@ -18,6 +18,9 @@
       transform: translateX(3px);
     }
   }
+  &.noLink {
+    grid-template-rows: max-content 1fr;
+  }
 }
 
 .cardHeader {

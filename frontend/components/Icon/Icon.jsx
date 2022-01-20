@@ -8,6 +8,18 @@ import Oneshot from './icons/oneshot'
 import Clock from './icons/clock'
 import Spanner from './icons/spanner'
 import Trash from './icons/trash'
+import BarbAxe from './icons/barbaxe';
+import Guitar from './icons/guitar';
+import ClericMace from './icons/clericMace';
+import NatureSickle from './icons/natureSickle';
+import SwordShieldAxe from './icons/swordShieldAxe';
+import Fist from './icons/fist'
+import WingedHelm from './icons/wingedHelm';
+import SwordWithPaws from './icons/swordWithPaws';
+import MaskWithDagger from './icons/maskWithDagger';
+import FireTear from './icons/fireTear';
+import DemonEye from './icons/demonEye';
+import MagicHand from './icons/magicHand';
 
 const icons = {
   dndlogo: Dndlogo,
@@ -19,7 +31,19 @@ const icons = {
   shotSkull: Oneshot,
   clock: Clock,
   spanner: Spanner,
-  trash: Trash
+  trash: Trash,
+  barbaxe: BarbAxe,
+  guitar: Guitar,
+  clericMace: ClericMace,
+  natureSickle: NatureSickle,
+  swordShieldAxe: SwordShieldAxe,
+  fist: Fist,
+  wingedHelm: WingedHelm,
+  swordWithPaws: SwordWithPaws,
+  MaskWithDagger: MaskWithDagger,
+  FireTear: FireTear,
+  demonEye: DemonEye,
+  magicHand: MagicHand
 };
 
 function Icon({ type = null, ...rest }) {

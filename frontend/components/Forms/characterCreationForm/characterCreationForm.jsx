@@ -75,7 +75,7 @@ export default function CharacterCreationForm({formCallback = null, isEditForm =
       {formError && <span className={style.errorText}>{formError}</span>}
       <div className={clsx([style.fullWidth, style.buttonContainer])}>
         <Button type="submit">
-          Add character
+          {isEditForm ? 'Edit character' : 'Add character' }
         </Button>
       </div>
     </form>

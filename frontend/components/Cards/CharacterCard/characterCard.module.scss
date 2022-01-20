@@ -1,0 +1,44 @@
+@import '../../../styles/imports.scss';
+
+.extraContentContainer {
+}
+
+.extraContentRow {
+  display: flex;
+  align-items: center;
+}
+
+.addedMargin {
+  margin-top: 15px;
+}
+
+.iconContainer {
+  display: inline-block;
+  width: 25px;
+  margin-right: 15px;
+}
+
+.halfRow {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  width: 50%;
+}
+
+.modifyCharacterContainer {
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 1;
+  }
+  .iconContainer {
+    width: 15px;
+    margin-right: 7.5px;
+  }
+}
+
+.modifyCharacterText {
+  display: inline-block;
+  width: 100%;
+  font-size: 1.4rem;
+}

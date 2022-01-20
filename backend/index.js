@@ -393,6 +393,7 @@ app.post('/characters', authenticateToken, async(req,res) => {
         class: characterClass,
         alignment,
         bio,
+        id: characterDoc.id,
         author: userDoc.id
       }
       
@@ -466,7 +467,8 @@ app.put('/characters/:id', authenticateToken, async(req,res) => {
     class: characterClass,
     alignment,
     bio,
-    id
+    id,
+    author: author.id
   }
 
   return res.status(200).send(responseObject)
