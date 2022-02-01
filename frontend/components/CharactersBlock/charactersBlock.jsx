@@ -77,6 +77,7 @@ export default function CharactersBlock({characters = [], dm = null}){
         /> 
       }
       <Container containerClass={style.cardContainer}>
+        <h2 className={style.sectionHeading}>Characters</h2>
         {charactersToShow.map(character => {
           const { username } = accountDetails || null
           const mayEditCharacter = username && (username === character.author || username === dm)

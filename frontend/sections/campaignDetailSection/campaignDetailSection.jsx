@@ -8,6 +8,7 @@ import CampaignCreationForm from '../../components/Forms/campaignCreationForm/ca
 import CampaignDetailBlock from '../../components/CampaignDetailBlock/campaignDetailBlock'
 import CharactersBlock from '../../components/CharactersBlock/charactersBlock';
 import DeleteModal from '../../components/Modal/deleteModal/deleteModal';
+import NotesBlock from '../../components/NotesBlock/notesBlock';
 
 import makeAuthorizedRequest from '../../utils/makeAuthorizedRequest';
 
@@ -78,6 +79,7 @@ export default function CampaignDetailSection(campaign) {
               deleteCallBack={toggleDeleteModal}
             />
             <CharactersBlock {...campaignToShow} />
+            <NotesBlock />
           </>}
     </section>
   )

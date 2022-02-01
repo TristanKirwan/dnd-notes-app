@@ -11,6 +11,7 @@ function MyApp({ Component, pageProps }) {
    <Head>
     <title>DnD Notes App</title>
     <meta name="description" content="An app that allows friends to create and share notes for Dungeons and Dragons to aid in their adventures." />
+    <meta charSet="utf-8" />
     <link rel="icon" href="/favicon.ico" />
     <link 
       href="/Inter.var.woff2" 

@@ -6,13 +6,17 @@ import detectOutsideClick from '../../utils/detectOutsideClick';
 
 import style from './modal.module.scss';
 
-export default function Modal({title, closeCallback, children}) {
+export default function Modal({title, closeCallback, children, shouldDetectOutsideClick = true}) {
   const modalRef = useRef(null)
 
   useEffect(() => {
-    window.addEventListener('click', (e) => detectOutsideClick(e, modalRef, closeCallback))
+    if(shouldDetectOutsideClick) {
+      window.addEventListener('click', (e) => detectOutsideClick(e, modalRef, closeCallback))
+    }
     return () => {
-      window.removeEventListener('click', (e) => detectOutsideClick(e, modalRef, closeCallback))
+      if(shouldDetectOutsideClick) {
+        window.removeEventListener('click', (e) => detectOutsideClick(e, modalRef, closeCallback))
+      }
     }
   }, [])
 

@@ -1,6 +1,6 @@
 @import '../../styles/imports.scss';
 
-.cardContainer {
+.notesContainer {
   display: grid;
   grid-gap: 15px;
   @include m {
@@ -8,11 +8,11 @@
   }
 }
 
+.sectionHeading {
+  grid-column: 1 / -1;
+}
+
 .addCharacterButton {
   grid-column: 1 / -1;
   justify-self: center;
-}
-
-.sectionHeading {
-  grid-column: 1 / -1;
 }

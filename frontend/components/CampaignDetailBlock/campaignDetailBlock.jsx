@@ -4,7 +4,6 @@ import Container from '../Container/container';
 import Icon from '..//Icon/icon'
 import clsx from 'clsx';
 
-// import getDateString from '../../utils/getDateString';
 import getDateString from '../../utils/getDateString';
 import getCampaignIcon from '../../utils/getCampaignIcon';
 import capitalizeWord from '../../utils/capitalizeWord'
@@ -14,7 +13,6 @@ import style from './campaignDetailBlock.module.scss'
 
 
 export default function CampaignDetailBlock({campaign, editCallBack, deleteCallBack, mayEditCampaign}){
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const { title, description, startDate, dm, users, type } = campaign || {}
   const showMetaData = startDate || dm || users;
   const dateString = getDateString(startDate)

@@ -20,6 +20,12 @@ import MaskWithDagger from './icons/maskWithDagger';
 import FireTear from './icons/fireTear';
 import DemonEye from './icons/demonEye';
 import MagicHand from './icons/magicHand';
+import Bold from './icons//bold';
+import Italic from './icons/italic';
+import Underline from './icons/underline';
+import Code from './icons/code';
+import Heading from './icons/heading'
+import BulletList from './icons/bulletList';
 
 const icons = {
   dndlogo: Dndlogo,
@@ -43,7 +49,13 @@ const icons = {
   MaskWithDagger: MaskWithDagger,
   FireTear: FireTear,
   demonEye: DemonEye,
-  magicHand: MagicHand
+  magicHand: MagicHand,
+  bold: Bold,
+  italic: Italic,
+  underline: Underline,
+  code: Code,
+  heading: Heading,
+  bulletList: BulletList
 };
 
 function Icon({ type = null, ...rest }) {
