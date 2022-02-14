@@ -5,7 +5,7 @@ Suggestions are always welcome as well as criticsm :).
 
 ## Special thanks:
 
-Font-awesome
-Flaticon
-Firestore
-game-icons.net
+- Font-awesome
+- Flaticon
+- Firestore
+- game-icons.net
