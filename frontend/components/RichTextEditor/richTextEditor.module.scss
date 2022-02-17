@@ -3,6 +3,7 @@
 .richTextEditorContainer {
   border: 1px solid var(--color-black);
   background-color: var(--color-black-2);
+  word-break: break-all;
   @include m {
     min-width: 750px;
   }
@@ -72,6 +73,17 @@
   }
 }
 
-.test {
+.editableElement {
   padding: 15px 10px;
+  overflow-y: auto;
+  min-height: 200px;
+  max-height: 200px;
+  @include m {
+    min-height: 350px;
+    max-height: 350px;
+  }
+  @include l {
+    min-height: 400px;
+    max-height: 400px;
+  }
 }

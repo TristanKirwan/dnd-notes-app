@@ -42,13 +42,17 @@ const MarkButton = ({ format, iconType }) => {
 export default function Toolbar({children}){
   return (
     <div className={style.toolbar}>
-      <MarkButton format="bold" iconType={"bold"}></MarkButton>
-      <MarkButton format="italic" iconType={"italic"}></MarkButton>
-      <MarkButton format="underline" iconType={"underline"}></MarkButton>
-      <MarkButton format="code" iconType={"code"}></MarkButton>
-      <BlockButton format="bulleted-list" iconType={"bulletList"}></BlockButton>
-      <BlockButton format="numbered-list" iconType={"numberedList"}></BlockButton>
-      <BlockButton format="heading" iconType={"heading"}></BlockButton>
+      <div className={style.buttonGroup}>
+        <MarkButton format="bold" iconType={"bold"}></MarkButton>
+        <MarkButton format="italic" iconType={"italic"}></MarkButton>
+        <MarkButton format="underline" iconType={"underline"}></MarkButton>
+        <MarkButton format="code" iconType={"code"}></MarkButton>
+      </div>
+      <div className={style.buttonGroup}>
+        <BlockButton format="bulleted-list" iconType={"bulletList"}></BlockButton>
+        <BlockButton format="numbered-list" iconType={"numberedList"}></BlockButton>
+        <BlockButton format="heading" iconType={"heading"}></BlockButton>
+      </div>
     </div>
   )
 }

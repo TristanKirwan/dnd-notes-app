@@ -6,6 +6,7 @@
   grid-auto-columns: max-content;
   grid-auto-flow: column;
   padding: 10px;
+  justify-content: space-between;
   background-color: var(--color-black);
 }
 
@@ -31,4 +32,10 @@
       opacity: 1;
     }
   }
+}
+
+.buttonGroup {
+  display: grid;
+  grid-gap: 15px;
+  grid-auto-flow: column;
 }

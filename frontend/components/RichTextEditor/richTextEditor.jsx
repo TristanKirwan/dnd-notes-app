@@ -8,7 +8,7 @@ import {
 import { withHistory } from 'slate-history';
 
 import Toolbar from './Toolbar/toolbar';
-import { toggleMark, toggleBlock, isListBlockActive } from '../../utils/richTextEditorFunctions';
+import { toggleMark, toggleBlock, isListBlockActive, isBlockActive } from '../../utils/richTextEditorFunctions';
 
 
 import style from './richTextEditor.module.scss';
@@ -63,9 +63,10 @@ export default function RichTextEditor() {
         const mark = HOTKEYS[hotkey];
         toggleMark(editor, mark)
       }
-    }
-    const listIsActive = isListBlockActive(editor)
+    }   
+    
     //If we press enter in a bulleted-list, and the current line is a bullet list without any text we want to turn it off
+    const listIsActive = isListBlockActive(editor)
     if(e.keyCode === 13 && listIsActive) {
       const currentPath = editor.selection.anchor.path;
       if(!Array.isArray(currentPath)) return;
@@ -88,13 +89,14 @@ export default function RichTextEditor() {
         e.preventDefault();
         toggleBlock(editor, 'paragraph');
       }
+      return;
     }
   }
 
   const Element = ({ attributes, children, element }) => {
     switch(element.type) {
-      case 'heading': 
-        return <h3>{children}</h3>
+      case 'heading':
+        return <h3 {...attributes}>{children}</h3>
       case 'bulleted-list':
         return <ul {...attributes}>{children}</ul>
       case 'numbered-list':
@@ -108,16 +110,16 @@ export default function RichTextEditor() {
 
   const Leaf = ({ attributes, children, leaf}) => {
     if(leaf.bold) {
-      children = <strong>{children}</strong>
+      children = <strong {...attributes}>{children}</strong>
     }
     if(leaf.italic) {
-      children = <em>{children}</em>
+      children = <em {...attributes}>{children}</em>
     }
     if(leaf.underline) {
-      children = <u>{children}</u>
+      children = <u {...attributes}>{children}</u>
     }
     if(leaf.code) {
-      children = <code>{children}</code>
+      children = <code {...attributes}>{children}</code>
     }
 
     return <span {...attributes}>{children}</span>
@@ -132,7 +134,7 @@ export default function RichTextEditor() {
           renderLeaf={renderLeaf}
           autoFocus
           onKeyDown={e => handleKeyDown(e)}
-          className={style.test}
+          className={style.editableElement}
         >
 
         </Editable>
