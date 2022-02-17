@@ -3,11 +3,12 @@ import isHotkey from 'is-hotkey'
 import { Editable, withReact, Slate} from 'slate-react';
 import {
   Editor,
-  createEditor} from 'slate';
+  createEditor,
+  Transforms} from 'slate';
 import { withHistory } from 'slate-history';
 
 import Toolbar from './Toolbar/toolbar';
-import { toggleMark, isBlockActive, toggleBlock } from '../../utils/richTextEditorFunctions';
+import { toggleMark, isBlockActive, toggleBlock, insertNode } from '../../utils/richTextEditorFunctions';
 
 
 import style from './richTextEditor.module.scss';
@@ -17,24 +18,25 @@ const initialEditorValue = [
     type: 'paragraph',
     children: [
       { text: 'You can start writing your notes here, you can make your text '},
-      { text: 'bold, ', bold: true},
-      { text: 'italicized '},
-    ]
-  }, {
-    type: 'paragraph',
-    children: [
-      {text: 'You can even create lists! Why would you want to do that?'},
+      // { text: 'bold, ', bold: true},
+      // { text: 'italicized '},
     ]
   },
-  {
-    type: 'bulleted-list',
-    children: [
-      { text: 'Because '},
-      { text: 'it'},
-      { text: 'is'},
-      { text: 'awesome?'}
-    ]
-  }
+  //  {
+  //   type: 'paragraph',
+  //   children: [
+  //     {text: 'You can even create lists! Why would you want to do that?'},
+  //   ]
+  // },
+  // {
+  //   type: 'bulleted-list',
+  //   children: [
+  //     { text: 'Because '},
+  //     { text: 'it'},
+  //     { text: 'is'},
+  //     { text: 'awesome?'}
+  //   ]
+  // }
 ]
 
 const HOTKEYS = {
@@ -55,7 +57,6 @@ export default function RichTextEditor() {
   const editor = editorRef.current
 
   function handleKeyDown(e) {
-    console.log(editor.selection)
     for(const hotkey in HOTKEYS){
       if(isHotkey(hotkey, e)) {
         e.preventDefault();
@@ -64,12 +65,29 @@ export default function RichTextEditor() {
       }
     }
     //If we press enter in a bulleted-list, and the current line is a bullet list without any text we want to turn it off
-    // if(e.keyCode === 13 && isBlockActive(editor, 'bulleted-list')) {
+    if(e.keyCode === 13 && isBlockActive(editor, 'bulleted-list')) {
+      const currentPath = editor.selection.anchor.path;
+      if(!Array.isArray(currentPath)) return;
 
-    //   if(editor.selection.anchor.offset === 0) {
-    //     toggleBlock(editor, 'bulleted-list');
-    //   }
-    // }
+      let currentNode = value;
+      let currentNodeHasChanged = false;
+
+      currentPath.forEach(index => {
+        //In the first loop, the currentNode will be an array (all possible nodes), after it will be an object with text/children
+        if(Array.isArray(currentNode)) {
+          currentNode = currentNode[index]
+        } else {
+          currentNode = currentNode.children[index];
+        }
+        currentNodeHasChanged = true;
+      })
+
+
+      if(currentNode.text === '' && currentNodeHasChanged) {
+        e.preventDefault();
+        toggleBlock(editor, 'paragraph');
+      }
+    }
   }
 
   const Element = ({ attributes, children, element }) => {
@@ -77,7 +95,9 @@ export default function RichTextEditor() {
       case 'heading': 
         return <h3>{children}</h3>
       case 'bulleted-list':
-        return <ul {...attributes}>{children.map((child, i) => <li key={i}>{child}</li>)}</ul>
+        return <ul {...attributes}>{children}</ul>
+      case 'list-item':
+        return <li {...attributes}>{children}</li>
       default:
         return <p {...attributes}>{children}</p>
     }

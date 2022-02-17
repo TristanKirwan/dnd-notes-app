@@ -43,10 +43,12 @@ export function toggleBlock(editor, format){
       LIST_TYPES.includes(n.type),
     split: true,
   })
+
   const newProperties = {
     type: isActive ? 'paragraph' : isList ? 'list-item' : format,
   }
-  Transforms.setNodes<SlateElement>(editor, newProperties)
+
+  Transforms.setNodes(editor, newProperties)
 
   if (!isActive && isList) {
     const block = { type: format, children: [] }

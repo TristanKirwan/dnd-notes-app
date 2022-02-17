@@ -1,4 +1,3 @@
-const LIST_TYPES = ['numbered-list', 'bulleted-list']
 import { useSlate } from 'slate-react'
 import clsx from 'clsx';
 
@@ -47,7 +46,7 @@ export default function Toolbar({children}){
       <MarkButton format="italic" iconType={"italic"}></MarkButton>
       <MarkButton format="underline" iconType={"underline"}></MarkButton>
       <MarkButton format="code" iconType={"code"}></MarkButton>
-      {/* <BlockButton format="bulleted-list" iconType={"bulletList"}></BlockButton> */}
+      <BlockButton format="bulleted-list" iconType={"bulletList"}></BlockButton>
     </div>
   )
 }
