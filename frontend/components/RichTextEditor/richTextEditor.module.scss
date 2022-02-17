@@ -60,6 +60,16 @@
       }
     }
   }
+
+  h3 {
+    * {
+      font-size: 2.2rem;
+      @include fontWeight(600);
+      @include m {
+        font-size: 2.8rem;
+      }
+    }
+  }
 }
 
 .test {

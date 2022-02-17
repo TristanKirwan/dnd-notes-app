@@ -48,6 +48,7 @@ export default function Toolbar({children}){
       <MarkButton format="code" iconType={"code"}></MarkButton>
       <BlockButton format="bulleted-list" iconType={"bulletList"}></BlockButton>
       <BlockButton format="numbered-list" iconType={"numberedList"}></BlockButton>
+      <BlockButton format="heading" iconType={"heading"}></BlockButton>
     </div>
   )
 }
