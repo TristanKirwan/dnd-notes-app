@@ -26,6 +26,7 @@ import Underline from './icons/underline';
 import Code from './icons/code';
 import Heading from './icons/heading'
 import BulletList from './icons/bulletList';
+import NumberedList from './icons/numberedList';
 
 const icons = {
   dndlogo: Dndlogo,
@@ -55,7 +56,8 @@ const icons = {
   underline: Underline,
   code: Code,
   heading: Heading,
-  bulletList: BulletList
+  bulletList: BulletList,
+  numberedList: NumberedList
 };
 
 function Icon({ type = null, ...rest }) {

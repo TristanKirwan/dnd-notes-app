@@ -22,6 +22,22 @@ export function isBlockActive(editor, format){
   return !!match
 }
 
+export function isListBlockActive(editor) {
+  let listIsActive = false;
+  if(!Array.isArray(LIST_TYPES)) return false;
+
+  for(let i = 0; i < LIST_TYPES.length; i ++) {
+    const currentType = LIST_TYPES[i]
+    const listTypeIsActive = isBlockActive(editor, currentType);
+    if(listTypeIsActive) {
+      listIsActive = true;
+      break;
+    }
+  }
+
+  return listIsActive
+}
+
 export function toggleMark(editor, format){
   const isActive = isMarkActive(editor, format)
 

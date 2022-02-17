@@ -46,6 +46,20 @@
       }
     }
   }
+
+  ol {
+    li {
+      display: flex;
+      align-items: center;
+      counter-increment: listIndex;
+      &:before {
+        content: counter(listIndex);
+        display: inline-block;
+        margin-right: 5px;
+        @include fontWeight(200);
+      }
+    }
+  }
 }
 
 .test {

@@ -8,7 +8,7 @@ import {
 import { withHistory } from 'slate-history';
 
 import Toolbar from './Toolbar/toolbar';
-import { toggleMark, isBlockActive, toggleBlock, insertNode } from '../../utils/richTextEditorFunctions';
+import { toggleMark, toggleBlock, isListBlockActive } from '../../utils/richTextEditorFunctions';
 
 
 import style from './richTextEditor.module.scss';
@@ -64,8 +64,9 @@ export default function RichTextEditor() {
         toggleMark(editor, mark)
       }
     }
+    const listIsActive = isListBlockActive(editor)
     //If we press enter in a bulleted-list, and the current line is a bullet list without any text we want to turn it off
-    if(e.keyCode === 13 && isBlockActive(editor, 'bulleted-list')) {
+    if(e.keyCode === 13 && listIsActive) {
       const currentPath = editor.selection.anchor.path;
       if(!Array.isArray(currentPath)) return;
 
@@ -96,6 +97,8 @@ export default function RichTextEditor() {
         return <h3>{children}</h3>
       case 'bulleted-list':
         return <ul {...attributes}>{children}</ul>
+      case 'numbered-list':
+        return <ol {...attributes}>{children}</ol>
       case 'list-item':
         return <li {...attributes}>{children}</li>
       default:
