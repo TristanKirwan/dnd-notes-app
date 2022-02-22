@@ -18,7 +18,7 @@ import { useStore } from '../../../store/provider';
 
 import style from './noteForm.module.scss';
 
-export default function NoteForm({noteData = null, isEditModal = false, recommendedTags = []}){
+export default function NoteForm({noteData = null, isEditModal = false, recommendedTags = [], campaignTitle = ''}){
   const { state } = useStore();
   const { accountDetails } = state
   const router = useRouter();
@@ -146,7 +146,7 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
         <div className={style.infoContainer}>
           <span className={style.infoLabel}>Campaign identifier</span>
           <span className={style.campaignId}>
-            {router.query.campaignId}
+            {campaignTitle}
           </span>
         </div>
         <div className={style.fullWidthInput}>

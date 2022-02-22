@@ -31,17 +31,18 @@ export async function getServerSideProps(context) {
   //This can be expanded to include tags that are used for notes in this campaign.
   const tagRecommendations = []
   campaignInformation.characters.map(character => { tagRecommendations.push(character.name.toUpperCase()); });
+  const title = campaignInformation.title ? campaignInformation.title : campaignInformation.id ? campaignInformation.id : 'Unknown campaign.'
 
-  return {props: {tagRecommendations: tagRecommendations}}
+  return {props: {tagRecommendations: tagRecommendations, campaignTitle: title}}
 }
 
 
 
-export default function AddNotePage({tagRecommendations}){
+export default function AddNotePage({tagRecommendations, campaignTitle}){
   return (
     <div>
       <PageTitle></PageTitle>
-      <NoteForm recommendedTags={tagRecommendations} />
+      <NoteForm recommendedTags={tagRecommendations} campaignTitle={campaignTitle}/>
     </div>
   )
 }
