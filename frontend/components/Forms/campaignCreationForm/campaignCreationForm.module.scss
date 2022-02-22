@@ -31,18 +31,7 @@
 .usersWrapper {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -15px;
-}
-
-.singleUserCotainer {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 15px;
-  margin-bottom: 15px;
-}
-
-.deleteIcon {
-  margin-left: 5px;
+  gap: 15px;
 }
 
 .buttonContainer {

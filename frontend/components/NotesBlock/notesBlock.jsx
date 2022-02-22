@@ -1,28 +1,19 @@
 import Container from '../../components/Container/container';
-import { useState } from 'react';
 
-import NoteModal from '../Modal/NoteModal/noteModal';
 import Button from '../Button/button';
 
 
 import style from './notesBlock.module.scss';
 
 
-export default function NotesBlock({notes}){
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-
-  function toggleNoteModal(){
-    setIsNoteModalOpen(!isNoteModalOpen);
-  }
+export default function NotesBlock({notes, campaignId}){
 
   return (
     <div>
-      {isNoteModalOpen && <NoteModal closeModalCallback={toggleNoteModal}>
-      </NoteModal>}
       <Container containerClass={style.notesContainer}>
         <h2 className={style.sectionHeading}>Notes</h2>
         {Array.isArray(notes) && notes.map(note => note.title)}
-        <Button callBack={toggleNoteModal} buttonClass={style.addCharacterButton}>
+        <Button isLink href={`/notes/add?campaignId=${campaignId}`} buttonClass={style.addCharacterButton}>
           Add Note
         </Button>
       </Container>

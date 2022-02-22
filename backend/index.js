@@ -231,6 +231,38 @@ app.get('/campaign/:id', authenticateToken, async(req, res) => {
   }
 })
 
+app.get('/campaign/:campaignId/users/:userId', authenticateToken, async(req,res) => {
+  const { username } = req.user;
+  const { campaignId, userId } = req.params;
+
+  const campaignDoc = doc(db, 'campaigns', `${campaignId}`);
+  const campaignDocSnap = await getDoc(campaignDoc);
+  if(!campaignDocSnap.exists()){
+    return res.status(404).send({message: 'The campaign with the given ID does not exist'})
+  }
+
+  const campaignData = await campaignDocSnap.data();
+  const campaignUsers = campaignData.users
+  if(!Array.isArray(campaignUsers)) {
+    return res.status(500).send({message: 'The requested document was faulty'});
+  }
+  if(!campaignUsers || !Array.isArray(campaignUsers)) {
+    return res.status(500).send({message: "The requested document was faulty"});
+  }
+  const usersIds = campaignUsers.map(user => user.id);
+  //Check if the requester is even part of the campaign. This should always be the case, but if it is not we don't want the user to be able to fulfill the request.
+  if(usersIds.indexOf(username) < 0) {
+    return res.status(403).send({message: "The current user may not request this document."})
+  }
+
+  if(usersIds.indexOf(userId) < 0) {
+    return res.status(404).send({message: `The user ${userId} is not part of this campaign!`})
+  }
+
+  return res.status(200).send({success: true})
+
+})
+
 app.put('/campaign/:id', authenticateToken, async(req,res) => {
   const { username } = req.user;
   const { id } = req.params;

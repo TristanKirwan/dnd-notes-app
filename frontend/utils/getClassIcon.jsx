@@ -1,5 +1,5 @@
-export default function getClassIcon(classname){
-  switch(classname){
+export default function getClassIcon(className){
+  switch(className){
     case 'barbarian':
       return 'barbaxe';
     case 'bard': 

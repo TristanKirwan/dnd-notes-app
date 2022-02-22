@@ -1,0 +1,26 @@
+@import '../../styles/imports.scss';
+
+.tag {
+  padding: 5px 5px;
+  border-radius: var(--border-rounding-large);
+  background-color: var(--color-white);
+  color: var(--color-black);
+  @include fontWeight(800);
+  font-size: 1.6rem;
+}
+
+.deleteIcon {
+  margin-left: 5px;
+}
+
+.addIcon {
+  transform: rotate(-45deg);
+}
+
+.tag {
+  &:hover {
+    .addIcon {
+      transform: rotate(45deg);
+    }
+  }
+}

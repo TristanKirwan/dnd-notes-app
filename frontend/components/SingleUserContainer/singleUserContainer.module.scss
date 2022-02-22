@@ -1,0 +1,15 @@
+@import '../../styles/imports.scss';
+
+.singleUserCotainer {
+  display: inline-flex;
+  align-items: center;
+}
+
+.deleteIcon {
+  margin-left: 5px;
+}
+
+.name {
+  font-size: 1.6rem;
+  @include fontWeight(200);
+}

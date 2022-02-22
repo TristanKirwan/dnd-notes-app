@@ -1,10 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import isHotkey from 'is-hotkey'
 import { Editable, withReact, Slate} from 'slate-react';
-import {
-  Editor,
-  createEditor,
-  Transforms} from 'slate';
+import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 
 import Toolbar from './Toolbar/toolbar';
@@ -15,28 +12,42 @@ import style from './richTextEditor.module.scss';
 
 const initialEditorValue = [
   {
+    type: 'heading',
+    children: [
+      {text: 'Forget pen & paper'}
+    ]
+  },
+  {
     type: 'paragraph',
     children: [
       { text: 'You can start writing your notes here, you can make your text '},
-      // { text: 'bold, ', bold: true},
-      // { text: 'italicized '},
+      { text: 'bold, ', bold: true},
+      { text: 'italicized ', italic: true},
+      { text: 'or even create lists!'}
     ]
   },
-  //  {
-  //   type: 'paragraph',
-  //   children: [
-  //     {text: 'You can even create lists! Why would you want to do that?'},
-  //   ]
-  // },
-  // {
-  //   type: 'bulleted-list',
-  //   children: [
-  //     { text: 'Because '},
-  //     { text: 'it'},
-  //     { text: 'is'},
-  //     { text: 'awesome?'}
-  //   ]
-  // }
+  {
+    type: 'bulleted-list',
+    children: [
+      { type: 'list-item', children:[{text: 'Because '}]},
+      { type: 'list-item', children:[{text: 'lists'}]},
+      { type: 'list-item', children:[{text: 'are'}]},
+      { type: 'list-item', children:[{text: 'awesome!'}]}
+    ]
+  },
+  {
+    type: 'paragraph',
+    children: [
+      {text: "We have ranked note-taking methods for you"}
+    ]
+  },
+  {
+    type: 'numbered-list',
+    children: [
+      {type: 'list-item', children:[{text: 'Dungeons & Notes'}]},
+      {type: 'list-item', children:[{text: 'Other note-taking apps.'}]}
+    ]
+  }
 ]
 
 const HOTKEYS = {

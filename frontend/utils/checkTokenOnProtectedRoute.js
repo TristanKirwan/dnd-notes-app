@@ -5,9 +5,11 @@ import jsonwebtoken from 'jsonwebtoken';
 
 export default function checkTokenOnProtectedRoute(accessToken, res){
   // This should never happen. It cannot redirect but nonetheless we will say we have redirected as navigation can be stopped in the pages mounting.
-  if(!accessToken || !res) {
-    return true
+  if(!res) {
+    console.warn('Something went wrong checking for a protected route.')
+    return true;
   }
+
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
   let shouldRedirect = false;
   if(!accessToken) {

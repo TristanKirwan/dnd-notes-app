@@ -16,6 +16,7 @@ import makeAuthorizedRequest from '../../../utils/makeAuthorizedRequest'
 import getFormData from '../../../utils/getFormData';
 
 import style from './campaignCreationForm.module.scss';
+import SingleUserContainer from '../../SingleUserContainer/singleUserContainer';
 
 export default function CampaignCreationForm({successCallBack, isEditForm = false, campaignData = null}){
   const { state } = useStore();
@@ -165,11 +166,8 @@ export default function CampaignCreationForm({successCallBack, isEditForm = fals
         <span className={style.usersContainerHeader}><Icon type="users" className={style.icon}/>Adventurers & Participants</span>
         <div className={style.usersWrapper}>
           {usersToInvite.map(user => 
-            <span className={style.singleUserCotainer} key={user}>
-              <span>{user}</span>
-              <DeleteCircle onClick={() => deleteUserFromCampaign(user)} className={style.deleteIcon} disabled={user === accountDetails.username || user === currentDM}/>
-            </span>)
-          }
+            <SingleUserContainer user={user} deleteOnClick={() => deleteUserFromCampaign(user)} disabled={user === accountDetails.username || user === currentDM} key={user}/>
+          )}
         </div>
       </div>
       <div className={clsx([style.fullWidth, style.buttonContainer])}>

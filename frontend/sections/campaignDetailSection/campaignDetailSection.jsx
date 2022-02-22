@@ -79,7 +79,7 @@ export default function CampaignDetailSection(campaign) {
               deleteCallBack={toggleDeleteModal}
             />
             <CharactersBlock {...campaignToShow} />
-            <NotesBlock />
+            <NotesBlock campaignId={campaign && campaign.id ? campaign.id : ''}/>
           </>}
     </section>
   )

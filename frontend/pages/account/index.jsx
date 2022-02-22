@@ -5,26 +5,7 @@ import AccountItemsSection from '../../sections/accountItemsSection/accountItems
 
 import makeAuthorizedRequest from "../../utils/makeAuthorizedRequest";
 
-export default function Account(props) {
-  const [addCampaignMessage, setAddCampaignMessage] = useState(null)
-
-  function testFunction(e){
-    e.preventDefault();
-    let actualFormData = new FormData(e.target);
-    const finalFormData = {}
-    for (var [key, value] of actualFormData.entries()) { 
-      finalFormData[key] = value
-    }
-    const requestBody = {text: finalFormData.text}
-    makeAuthorizedRequest('addNote', requestBody)
-    .then(res => {
-      console.log(res)
-    })
-    .catch(err => {
-      console.error(err)
-    })
-  }
-
+export default function Account() {
   return (
     <>
       <PageTitle>My Account</PageTitle>

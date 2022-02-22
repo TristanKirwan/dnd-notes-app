@@ -1,0 +1,46 @@
+@import '../../../styles/imports.scss';
+
+.noteForm {
+  display: grid;
+  grid-gap: 15px 25px;
+  @include m {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.infoLabel {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.fullWidthInput {
+  grid-column: 1 / -1;
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.campaignId {
+  display: block;
+  font-size: 1.4rem;
+  margin-top: auto;
+}
+
+.labelContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.noInputText {
+  font-size: 1.2rem;
+}
