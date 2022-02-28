@@ -44,3 +44,11 @@
 .noInputText {
   font-size: 1.2rem;
 }
+
+.errorText {
+  display: inline-block;
+  text-align: center;
+  grid-column: 1 / -1;
+  color: var(--color-error);
+  font-size: 1.2rem;
+}

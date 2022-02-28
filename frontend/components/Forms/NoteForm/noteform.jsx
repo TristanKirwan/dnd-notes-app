@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { useSlate } from 'slate-react'
 import dlv from 'dlv';
 import clsx from 'clsx';
 import axios from 'axios';
@@ -18,10 +17,11 @@ import { useStore } from '../../../store/provider';
 
 import style from './noteForm.module.scss';
 
-export default function NoteForm({noteData = null, isEditModal = false, recommendedTags = [], campaignTitle = ''}){
+export default function NoteForm({noteData = null, isEditModal = false, recommendedTags = [], campaignTitle = '', isEditForm = false}){
   const { state } = useStore();
   const { accountDetails } = state
   const router = useRouter();
+  const editorValue = useRef(null)
 
   const noteTitle = dlv(noteData, 'title', '');
   const [readersToInvite, setReadersToInvite] = useState([])
@@ -31,6 +31,8 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
   const [tagError, setTagError] = useState(null);
 
   const [currentRecommendedTags, setCurrentRecommendedTags] = useState(recommendedTags)
+
+  const [addNoteFormError, setAddNoteFormError] = useState(null)
 
   useEffect(() => {
     if(accountDetails && accountDetails.username && !isEditModal) {
@@ -132,14 +134,49 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
   }
   
   function saveNoteToDb(e){
+    e.preventDefault();
     const formData = getFormData(e.target); 
-    const slateInstance = useSlate();
-    
+    const dataIsFaulty = false;
+
+    if(!editorValue || !editorValue.current || !Array.isArray(tags) || !Array.isArray(readersToInvite) || readersToInvite.indexOf(accountDetails.username) < 0) {
+      dataIsFaulty = true;
+    }
+
+    if(dataIsFaulty) {
+      setAddNoteFormError({
+        text: "Something went wrong while adding your note. Please reload the page and try again."
+      })
+      return;
+    }
+
+
+    formData['content'] = editorValue.current;
+    formData['tags'] = tags;
+    formData['readers'] = readersToInvite;
+
+    if(isEditForm) {
+      //This still has to be made.
+      alert('Unfortunately, it is not yet possible to edit a note!')
+    } else {
+      makeAuthorizedRequest(`note`, formData)
+      .then(res => console.log(res))
+      .catch(err => console.error('Something went wrong trying to add a note to the campaign.', err))
+    }
+
+    console.log(editorValue.current, formData)
+  }
+
+  function getEditorData(val) {
+    console.log(val)
+    if(Array.isArray(val)) {
+      editorValue.current = val;
+      return;
+    }
   }
 
   return (
     <Container>
-      <form className={style.noteForm} onSubmit={() => saveNoteToDb}>
+      <form className={style.noteForm} onSubmit={saveNoteToDb}>
         <div>
           <Input type="text" required hasLabel labelText="Note title" id="note-creation-title" name="title" defaultValue={noteTitle} />
         </div>
@@ -150,7 +187,7 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
           </span>
         </div>
         <div className={style.fullWidthInput}>
-          <RichTextEditor />
+          <RichTextEditor getEditorData={getEditorData} />
         </div>
         <div>
           <Input type="text" hasLabel labelText={"Add a reader"} id="note-creation-reader" onKeyPressFunction={addReaderToNoteInput} error={readerError}></Input>
@@ -188,6 +225,7 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
           Save note
         </Button>
       </div>
+      {addNoteFormError && <span className={style.errorText}>{addNoteFormError.text}</span>}
       </form>
     </Container>
   )

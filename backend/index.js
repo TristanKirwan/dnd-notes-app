@@ -80,14 +80,10 @@ app.post('/login', async (req, res) => {
   }
 })
 
-//THIS IS NOT FINISHED!
-app.post('/addNote', authenticateToken, async(req,res) => {
-  const { text } = req.body
-  const user = req.user
-  console.log(user)
-  const docRef = await addDoc(collection(db, 'notes'), {
-    text: text
-  })
+
+app.post('/note', authenticateToken, async(req,res) => {
+  console.log(req.body);
+  res.status(200).send({message: 'done'})
 })
 
 app.get('/getCampaigns', authenticateToken, async(req, res) => {

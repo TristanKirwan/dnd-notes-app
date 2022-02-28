@@ -5,7 +5,7 @@ import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 
 import Toolbar from './Toolbar/toolbar';
-import { toggleMark, toggleBlock, isListBlockActive, isBlockActive } from '../../utils/richTextEditorFunctions';
+import { toggleMark, toggleBlock, isListBlockActive } from '../../utils/richTextEditorFunctions';
 
 
 import style from './richTextEditor.module.scss';
@@ -57,7 +57,7 @@ const HOTKEYS = {
   'mod+`': 'code',
 }
 
-export default function RichTextEditor() {
+export default function RichTextEditor({getEditorData}) {
   const [value, setValue] = useState(initialEditorValue);
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, [])
@@ -146,6 +146,7 @@ export default function RichTextEditor() {
           autoFocus
           onKeyDown={e => handleKeyDown(e)}
           className={style.editableElement}
+          onBlur={() => getEditorData(value)}
         >
 
         </Editable>
