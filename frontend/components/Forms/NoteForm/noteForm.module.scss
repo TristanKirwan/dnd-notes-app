@@ -2,15 +2,13 @@
 
 .noteForm {
   display: grid;
-  grid-gap: 15px 25px;
-  @include m {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  grid-gap: 50px;
 }
 
 .infoLabel {
   display: inline-block;
   margin-bottom: 10px;
+  @include fontWeight(600);
 }
 
 .fullWidthInput {
@@ -51,4 +49,28 @@
   grid-column: 1 / -1;
   color: var(--color-error);
   font-size: 1.2rem;
+}
+
+.category {
+  display: grid;
+  grid-gap: 25px;
+  @include m {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.categoryIntro {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-gap: 15px;
+  margin-bottom: 20px;
+}
+
+.categoryTitle {
+  padding-bottom: 1.5rem;
+  border-bottom: 4px solid var(--color-white);
+}
+
+.categoryDescription {
+  font-size: 1.4rem;
 }

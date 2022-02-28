@@ -143,7 +143,6 @@ export default function RichTextEditor({getEditorData}) {
         <Editable
           renderElement={renderElement}
           renderLeaf={renderLeaf}
-          autoFocus
           onKeyDown={e => handleKeyDown(e)}
           className={style.editableElement}
           onBlur={() => getEditorData(value)}
