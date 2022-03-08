@@ -50,12 +50,11 @@ app.post('/register', async (req, res) => {
   const accountDocSnap = await getDoc(accountDocRef)
 
   if (!accountDocSnap.exists()) {
-    console.log('No account with entered name, continue registration');
     const hash = await bcrypt.hash(password, 10);
     setDoc(accountDocRef, {password: hash, campaigns: [] })
     res.status(200).send('User added successfully');
   } else {
-    console.log(`Username: ${username} already exists in the database`);
+    console.error(`Username: ${username} already exists in the database`);
     res.status(500);
     res.send({userNameExists: true});
   }
@@ -82,8 +81,112 @@ app.post('/login', async (req, res) => {
 
 
 app.post('/note', authenticateToken, async(req,res) => {
-  console.log(req.body);
-  res.status(200).send({message: 'done'})
+  const { campaignId, title, content, tags, readers, editors, created, editDate } = req.body;
+  const { username } = req.user;
+
+  if(!campaignId ||
+    !title ||
+    !content ||
+    !Array.isArray(content) ||
+    !tags ||
+    !Array.isArray(tags) ||
+    !readers ||
+    !Array.isArray(readers) ||
+    !editors ||
+    !Array.isArray(editors) ||
+    !created ||
+    !editDate) {
+    res.status(400).send({message: "The request to add a note was not completed due to incorrect data."})
+    return;
+  }
+
+  try {
+    await runTransaction(db, async(transaction) => {
+      const noteDoc = doc(collection(db, 'notes'));
+      const campaignDoc = doc(db, 'campaigns', campaignId)
+      const campaignDocSnap = await transaction.get(campaignDoc);
+
+      if(!campaignDocSnap.exists()) {
+        return res.status(500).send({message: `Campaign with the id: ${campaignId} was not found in the database.`});
+      }
+      
+      const campaignData = campaignDocSnap.data();
+      if(!campaignData || !campaignData.users) {
+        return res.status(500).send({message: `Something went wrong getting the user data of this campaign.`})
+      }
+
+      const campaignUsers = campaignData.users.map(user => user.id);
+      if(campaignUsers.indexOf(username) < 0) {
+        return res.status(403).send({message: `The author of this note is not part of the campaign.`})
+      }
+
+      const noteReaders = [];
+      //Check if all the filled in readers are part of the campaign.
+      for(let i = 0; i < readers.length; i++) {
+        const reader = readers[i];
+        if(campaignUsers.indexOf(reader) < 0) {
+          return res.status(403).send({message: `One of the readers listed for the note is not part of the campaign.`})
+        }
+        const readerDoc = doc(db, 'users', reader);
+        const readerDocSnap = await transaction.get(readerDoc);
+        if(!readerDocSnap.exists()) {
+          return res.status(500).send({message: `One of the readers listed for the note cannot be found in the database.`})
+        }
+        noteReaders.push(readerDoc);
+      }
+      
+      const noteEditors = [];
+      //Check if all the filled in editors are part of the campaign.
+      for(let i = 0; i < editors.length; i++) {
+        const editor = editors[i];
+        if(campaignUsers.indexOf(editor) < 0) {
+          return res.status(403).send({message: `One of the editors listed for the note is not part of the campaign.`})
+        }
+        const editorDoc = doc(db, 'users', editor);
+        const editorDocSnap = await transaction.get(editorDoc);
+        if(!editorDocSnap.exists()){
+          return res.status(500).send({message: `One of the editors listed for the note cannot be found in the database.`})
+        }
+        noteEditors.push(editorDoc);
+      }
+
+      const currentDate = Timestamp.now();
+
+      const campaignTagArray = Array.isArray(campaignData.tags) ? campaignData.tags : [];
+      for(let i = 0; i < tags.length; i++) {
+        const tag = tags[i]
+        let tagObject = campaignTagArray.find(tagObject => tagObject.label === tag);
+        //Tag already exists in current campaign, so we up the counter.
+        if(tagObject) {
+          tagObject.count += 1;
+        } else { // Tag doesn't exist in campaign yet, so we add it in
+          campaignTagArray.push({
+            label: tag,
+            count: 1
+          })
+        }
+      }
+
+      transaction.set(noteDoc, {
+        title,
+        tags,
+        content,
+        readers: noteReaders,
+        editors: noteEditors,
+        created: currentDate,
+        modified: currentDate
+      })
+
+      transaction.update(campaignDoc, {
+        tags: campaignTagArray
+      })
+    
+      res.status(200).send({message: 'Successfully added note to the database.'})
+    })
+  } catch(error) {
+    console.error('Transaction failed with error:', error);
+    res.status(500).send({message: error})
+  }
 })
 
 app.get('/getCampaigns', authenticateToken, async(req, res) => {
