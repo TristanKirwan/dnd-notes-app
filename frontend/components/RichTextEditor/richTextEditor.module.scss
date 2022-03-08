@@ -80,10 +80,13 @@
   padding: 15px 10px;
   overflow-y: auto;
   max-height: 300px;
+  min-height: 300px;
   @include m {
     max-height: 400px;
+    min-height: 400px;
   }
   @include l {
     max-height: 450px;
+    min-height: 450px;
   }
 }
