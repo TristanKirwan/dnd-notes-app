@@ -40,10 +40,10 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
 
   const today = new Date();
   const modificationDate = formatDate(today);
+  const creationDate = noteData && noteData.created ? noteData.creationDate : formatDate(today);
 
   useEffect(() => {
     if(accountDetails && accountDetails.username && !isEditModal) {
-      setReadersToInvite([accountDetails.username])
       setEditorsToInvite([accountDetails.username])
     }
   }, [state])
@@ -67,21 +67,30 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
       if(userType === 'editor') {
         const newArray = [...editorsToInvite]
         newArray.push(username)
-        return newArray;
+        setEditorsToInvite(newArray);
+        const userIndexInReaders = readersToInvite.indexOf(username);
+        if(userIndexInReaders >= 0) {
+          const newReadersArray = [...readersToInvite];
+          newReadersArray.splice(userIndexInReaders, 1);
+          setReadersToInvite(newReadersArray);
+        }
       } else {
+        if(username === accountDetails.username) {
+          return setReaderError({text: 'You cannot be a reader of this note, as you are a mandatory editor.'})
+        }
         const newArray = [...readersToInvite]
         newArray.push(username)
-        return newArray;
+        setReadersToInvite(newArray);
+        const userIndexInEditors = editorsToInvite.indexOf(username);
+        if(userIndexInEditors >= 0) {
+          const newEditorsArray = [...editorsToInvite];
+          newEditorsArray.splice(userIndexInEditors, 1);
+          setEditorsToInvite(newEditorsArray);
+        }
       }
     })
-    .then(res => {
-      console.log('hi', res)
-      if(userType === 'editor') {
-        setEditorsToInvite(res)
-      } else {
-        setReadersToInvite(res)
-      }
-      e.target.value = "";
+    .then(() => {
+      e.target.value = '';
     })
     .catch(err => {
       if(err && err.response && err.response.status === 403) {
@@ -189,17 +198,17 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
     formData['tags'] = tags;
     formData['readers'] = readersToInvite;
     formData['editors'] = editorsToInvite;
+    formData['created'] = creationDate;
+    formData['editDate'] = modificationDate;
+    formData['campaignId'] = router.query.campaignId;
 
     if(isEditForm) {
       //This still has to be made.
       alert('Unfortunately, it is not yet possible to edit a note!')
     } else {
       makeAuthorizedRequest(`note`, formData)
-      .then(res => console.log(res))
       .catch(err => console.error('Something went wrong trying to add a note to the campaign.', err))
     }
-
-    console.log(editorValue.current, formData)
   }
 
   function getEditorData(val) {
@@ -224,6 +233,12 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
             <span className={style.infoLabel}>Campaign identifier</span>
             <span className={style.campaignId}>
               {campaignTitle}
+            </span>
+          </div>
+          <div className={style.infoContainer}>
+            <span className={style.infoLabel}>Creation date</span>
+            <span className={style.campaignId}>
+              {creationDate}
             </span>
           </div>
           <div className={style.infoContainer}>
