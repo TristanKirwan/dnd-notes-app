@@ -180,9 +180,9 @@ export default function NoteForm({noteData = null, isEditModal = false, recommen
   function saveNoteToDb(e){
     e.preventDefault();
     const formData = getFormData(e.target); 
-    const dataIsFaulty = false;
+    let dataIsFaulty = false;
 
-    if(!editorValue || !editorValue.current || !Array.isArray(tags) || !Array.isArray(readersToInvite) || readersToInvite.indexOf(accountDetails.username) < 0) {
+    if(!editorValue || !editorValue.current || !Array.isArray(tags) || !Array.isArray(readersToInvite) || editorsToInvite.indexOf(accountDetails.username) < 0) {
       dataIsFaulty = true;
     }
 
